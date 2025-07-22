@@ -17,12 +17,12 @@ export const columns: ColumnDef<Product>[] = [
       const title = row.original.title || row.original.name;
       return (
         <div className='relative aspect-square h-16 w-16'>
-          <Image
+          {/* <Image
             src={imageUrl}
             alt={title}
             fill
             className='rounded-lg object-cover'
-          />
+          /> */}
         </div>
       );
     }
