@@ -1,25 +1,47 @@
-import { fakeProducts, Product } from '@/constants/mock-api';
+'use client';
+
+import { useEffect, useState } from 'react';
 import { notFound } from 'next/navigation';
 import ProductForm from './product-form';
+import { useProduct } from '@/hooks/use-products';
 
 type TProductViewPageProps = {
   productId: string;
 };
 
-export default async function ProductViewPage({
-  productId
-}: TProductViewPageProps) {
-  let product = null;
-  let pageTitle = 'Create New Product';
+export default function ProductViewPage({ productId }: TProductViewPageProps) {
+  const [pageTitle, setPageTitle] = useState('Create New Product');
 
-  if (productId !== 'new') {
-    const data = await fakeProducts.getProductById(Number(productId));
-    product = data.product as Product;
-    if (!product) {
-      notFound();
+  // Skip query if productId is 'new'
+  const { data, loading, error } = useProduct(
+    productId !== 'new' ? productId : ''
+  );
+
+  useEffect(() => {
+    if (productId === 'new') {
+      setPageTitle('Create New Product');
+    } else if (data?.product) {
+      setPageTitle('Edit Product');
     }
-    pageTitle = `Edit Product`;
+  }, [productId, data]);
+
+  // Handle loading state
+  if (productId !== 'new' && loading) {
+    return <div>Loading...</div>;
   }
+
+  // Handle error state
+  if (error) {
+    console.error('Error loading product:', error);
+    notFound();
+  }
+
+  // Handle not found
+  if (productId !== 'new' && !loading && !data?.product) {
+    notFound();
+  }
+
+  const product = productId === 'new' ? null : data?.product;
 
   return <ProductForm initialData={product} pageTitle={pageTitle} />;
 }

@@ -10,28 +10,33 @@ import { CATEGORY_OPTIONS } from './options';
 
 export const columns: ColumnDef<Product>[] = [
   {
-    accessorKey: 'photo_url',
+    accessorKey: 'image',
     header: 'IMAGE',
     cell: ({ row }) => {
+      const imageUrl = row.getValue('image') || row.original.photo_url;
+      const title = row.original.title || row.original.name;
       return (
-        <div className='relative aspect-square'>
+        <div className='relative aspect-square h-16 w-16'>
           <Image
-            src={row.getValue('photo_url')}
-            alt={row.getValue('name')}
+            src={imageUrl}
+            alt={title}
             fill
-            className='rounded-lg'
+            className='rounded-lg object-cover'
           />
         </div>
       );
     }
   },
   {
-    id: 'name',
-    accessorKey: 'name',
+    id: 'title',
+    accessorKey: 'title',
     header: ({ column }: { column: Column<Product, unknown> }) => (
       <DataTableColumnHeader column={column} title='Name' />
     ),
-    cell: ({ cell }) => <div>{cell.getValue<Product['name']>()}</div>,
+    cell: ({ row }) => {
+      const title = row.original.title || row.original.name;
+      return <div className='font-medium'>{title}</div>;
+    },
     meta: {
       label: 'Name',
       placeholder: 'Search products...',
@@ -41,19 +46,16 @@ export const columns: ColumnDef<Product>[] = [
     enableColumnFilter: true
   },
   {
-    id: 'category',
-    accessorKey: 'category',
+    id: 'type',
+    accessorKey: 'type',
     header: ({ column }: { column: Column<Product, unknown> }) => (
       <DataTableColumnHeader column={column} title='Category' />
     ),
-    cell: ({ cell }) => {
-      const status = cell.getValue<Product['category']>();
-      const Icon = status === 'active' ? CheckCircle2 : XCircle;
-
+    cell: ({ row }) => {
+      const type = row.original.type || row.original.category;
       return (
         <Badge variant='outline' className='capitalize'>
-          <Icon />
-          {status}
+          {type}
         </Badge>
       );
     },
@@ -62,6 +64,35 @@ export const columns: ColumnDef<Product>[] = [
       label: 'categories',
       variant: 'multiSelect',
       options: CATEGORY_OPTIONS
+    }
+  },
+  {
+    id: 'isAvailable',
+    accessorKey: 'isAvailable',
+    header: ({ column }: { column: Column<Product, unknown> }) => (
+      <DataTableColumnHeader column={column} title='Status' />
+    ),
+    cell: ({ row }) => {
+      const isAvailable = row.original.isAvailable;
+      const Icon = isAvailable ? CheckCircle2 : XCircle;
+      return (
+        <Badge
+          variant={isAvailable ? 'default' : 'secondary'}
+          className='capitalize'
+        >
+          <Icon className='mr-1 h-3 w-3' />
+          {isAvailable ? 'Available' : 'Unavailable'}
+        </Badge>
+      );
+    },
+    enableColumnFilter: true,
+    meta: {
+      label: 'status',
+      variant: 'select',
+      options: [
+        { label: 'Available', value: 'true' },
+        { label: 'Unavailable', value: 'false' }
+      ]
     }
   },
   {

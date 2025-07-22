@@ -1,14 +1,27 @@
 import { NavItem } from '@/types';
 
 export type Product = {
-  photo_url: string;
-  name: string;
+  id: string;
+  title: string;
   description: string;
-  created_at: string;
   price: number;
-  id: number;
-  category: string;
-  updated_at: string;
+  image: string;
+  definition: string[];
+  type: 'drinks' | 'appetizers' | 'mains' | 'desserts' | 'sides';
+  isAvailable: boolean;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  // Legacy fields for backward compatibility
+  photo_url?: string;
+  name?: string;
+  created_at?: string;
+  category?: string;
+  updated_at?: string;
 };
 
 //Info: The following data is used for the sidebar navigation and Cmd K bar.

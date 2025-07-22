@@ -20,10 +20,12 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Product } from '@/constants/mock-api';
+import { useAllProducts, useProduct } from '@/hooks/use-products';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
+import { useEffect } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -45,7 +47,7 @@ const formSchema = z.object({
       (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
       '.jpg, .jpeg, .png and .webp files are accepted.'
     ),
-  name: z.string().min(2, {
+  title: z.string().min(2, {
     message: 'Product name must be at least 2 characters.'
   }),
   category: z.string(),
@@ -55,27 +57,113 @@ const formSchema = z.object({
   })
 });
 
-export default function ProductForm({
-  initialData,
-  pageTitle
-}: {
-  initialData: Product | null;
+type ProductFormProps = {
+  productId?: string; // For editing existing products
+  initialData?: any | null; // For direct data passing (optional)
   pageTitle: string;
-}) {
+  mode?: 'create' | 'edit';
+};
+
+export default function ProductForm({
+  productId,
+  initialData,
+  pageTitle,
+  mode = 'create'
+}: ProductFormProps) {
+  // Use useProduct hook when we have a productId (for editing)
+  const {
+    data: fetchedProduct,
+    loading: isLoadingProduct,
+    error: productError,
+    refetch: refetchProduct
+  } = useProduct(productId || '');
+
+  // Determine which product data to use
+  const productData = initialData || fetchedProduct;
+
   const defaultValues = {
-    name: initialData?.name || '',
-    category: initialData?.category || '',
-    price: initialData?.price || 0,
-    description: initialData?.description || ''
+    name: '',
+    category: '',
+    price: 0,
+    description: ''
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    values: defaultValues
+    defaultValues
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Form submission logic would be implemented here
+  // Update form when product data is loaded
+  useEffect(() => {
+    if (productData) {
+      form.reset({
+        title: productData.title || '',
+        category: productData.category || '',
+        price: productData.price || 0,
+        description: productData.description || '',
+        // Note: image field handling would depend on your FileUploader implementation
+        // You might need to convert existing image URLs to the expected format
+        image: productData.imageUrl ? [] : undefined // Adjust based on your needs
+      });
+    }
+  }, [productData, form]);
+
+  // Handle form submission
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      if (mode === 'edit' && productId) {
+        // Update existing product
+        console.log('Updating product:', productId, values);
+        // Call your update mutation here
+        // await updateProduct({ id: productId, ...values });
+      } else {
+        // Create new product
+        console.log('Creating new product:', values);
+        // Call your create mutation here
+        // await createProduct(values);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
+  }
+
+  // Handle loading state
+  if (mode === 'edit' && productId && isLoadingProduct) {
+    return (
+      <Card className='mx-auto w-full'>
+        <CardHeader>
+          <Skeleton className='h-8 w-64' />
+        </CardHeader>
+        <CardContent className='space-y-6'>
+          <Skeleton className='h-32 w-full' />
+          <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+            <Skeleton className='h-10 w-full' />
+            <Skeleton className='h-10 w-full' />
+            <Skeleton className='h-10 w-full' />
+          </div>
+          <Skeleton className='h-24 w-full' />
+          <Skeleton className='h-10 w-32' />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Handle error state
+  if (mode === 'edit' && productId && productError) {
+    return (
+      <Card className='mx-auto w-full'>
+        <CardContent className='py-8'>
+          <div className='space-y-4 text-center'>
+            <p className='text-red-500'>
+              Error loading product: {productError.message}
+            </p>
+            <Button onClick={refetchProduct} variant='outline'>
+              Try Again
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
@@ -117,7 +205,7 @@ export default function ProductForm({
             <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
               <FormField
                 control={form.control}
-                name='name'
+                name='title'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Product Name</FormLabel>
@@ -136,7 +224,7 @@ export default function ProductForm({
                     <FormLabel>Category</FormLabel>
                     <Select
                       onValueChange={(value) => field.onChange(value)}
-                      value={field.value[field.value.length - 1]}
+                      value={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -169,6 +257,9 @@ export default function ProductForm({
                         step='0.01'
                         placeholder='Enter price'
                         {...field}
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value) || 0)
+                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -193,7 +284,9 @@ export default function ProductForm({
                 </FormItem>
               )}
             />
-            <Button type='submit'>Add Product</Button>
+            <Button type='submit' disabled={isLoadingProduct}>
+              {mode === 'edit' ? 'Update Product' : 'Add Product'}
+            </Button>
           </form>
         </Form>
       </CardContent>

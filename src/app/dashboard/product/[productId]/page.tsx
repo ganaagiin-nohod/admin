@@ -11,6 +11,7 @@ type PageProps = { params: Promise<{ productId: string }> };
 
 export default async function Page(props: PageProps) {
   const params = await props.params;
+  console.log(params.productId);
   return (
     <PageContainer scrollable>
       <div className='flex-1 space-y-4'>
