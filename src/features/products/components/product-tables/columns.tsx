@@ -13,16 +13,33 @@ export const columns: ColumnDef<Product>[] = [
     accessorKey: 'image',
     header: 'IMAGE',
     cell: ({ row }) => {
-      const imageUrl = row.getValue('image') || row.original.photo_url;
-      const title = row.original.title || row.original.name;
+      const imageUrl =
+        (row.getValue('image') as string) || row.original.photo_url;
+      const title = row.original.title || row.original.name || 'Product';
+
+      // Simple placeholder image URL - you can replace this with your own placeholder
+      const placeholderImage =
+        'https://via.placeholder.com/64x64/f3f4f6/9ca3af?text=No+Image';
+
       return (
-        <div className='relative aspect-square h-16 w-16'>
-          {/* <Image
-            src={imageUrl}
-            alt={title}
-            fill
-            className='rounded-lg object-cover'
-          /> */}
+        <div className='relative aspect-square h-16 w-16 overflow-hidden rounded-lg bg-gray-100'>
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={title}
+              fill
+              className='object-cover'
+              sizes='64px'
+              onError={(e) => {
+                // Hide the image if it fails to load
+                (e.target as HTMLImageElement).style.display = 'none';
+              }}
+            />
+          ) : (
+            <div className='flex h-full w-full items-center justify-center text-xs text-gray-400'>
+              No Image
+            </div>
+          )}
         </div>
       );
     }
