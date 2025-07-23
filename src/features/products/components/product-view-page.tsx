@@ -13,9 +13,7 @@ export default function ProductViewPage({ productId }: TProductViewPageProps) {
   const [pageTitle, setPageTitle] = useState('Create New Product');
 
   // Skip query if productId is 'new'
-  const { data, loading, error } = useProduct(
-    productId !== 'new' ? productId : ''
-  );
+  const { data, loading, error } = useProduct(productId);
 
   useEffect(() => {
     if (productId === 'new') {

@@ -82,6 +82,17 @@ export const resolvers = {
       console.log('Product query called with id:', id);
       try {
         await connectDB();
+
+        // Validate the ID format
+        if (!id || id.trim() === '' || id === 'new') {
+          throw new Error('Invalid product ID provided');
+        }
+
+        // Check if it's a valid MongoDB ObjectId format
+        if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+          throw new Error('Invalid product ID format');
+        }
+
         const product = await Product.findById(id).populate(
           'createdBy',
           'name email'
@@ -195,6 +206,16 @@ export const resolvers = {
       try {
         await connectDB();
 
+        // Validate the ID format
+        if (!id || id.trim() === '' || id === 'new') {
+          throw new Error('Invalid product ID provided');
+        }
+
+        // Check if it's a valid MongoDB ObjectId format
+        if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+          throw new Error('Invalid product ID format');
+        }
+
         const product = await Product.findByIdAndUpdate(
           id,
           { ...input, updatedAt: new Date() },
@@ -219,6 +240,16 @@ export const resolvers = {
       try {
         await connectDB();
 
+        // Validate the ID format
+        if (!id || id.trim() === '' || id === 'new') {
+          throw new Error('Invalid product ID provided');
+        }
+
+        // Check if it's a valid MongoDB ObjectId format
+        if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+          throw new Error('Invalid product ID format');
+        }
+
         const product = await Product.findByIdAndDelete(id);
         if (!product) {
           throw new Error('Product not found');
@@ -237,6 +268,16 @@ export const resolvers = {
       console.log('ToggleProductAvailability mutation called with id:', id);
       try {
         await connectDB();
+
+        // Validate the ID format
+        if (!id || id.trim() === '' || id === 'new') {
+          throw new Error('Invalid product ID provided');
+        }
+
+        // Check if it's a valid MongoDB ObjectId format
+        if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+          throw new Error('Invalid product ID format');
+        }
 
         const product = await Product.findById(id);
         if (!product) {

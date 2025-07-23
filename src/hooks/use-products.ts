@@ -19,7 +19,8 @@ export function useProducts(filters?: any) {
 export function useProduct(id: string) {
   return useQuery(GET_PRODUCT, {
     variables: { id },
-    errorPolicy: 'all'
+    errorPolicy: 'all',
+    skip: !id || id.trim() === '' || id === 'new' // Skip query if ID is invalid
   });
 }
 

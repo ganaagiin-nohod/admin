@@ -20,12 +20,19 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { useAllProducts, useProduct } from '@/hooks/use-products';
+import {
+  useProduct,
+  useCreateProduct,
+  useUpdateProduct
+} from '@/hooks/use-products';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { PRODUCT_TYPES, ProductType } from '@/types/product';
 
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -35,6 +42,7 @@ const ACCEPTED_IMAGE_TYPES = [
   'image/webp'
 ];
 
+// Updated form schema to match GraphQL requirements
 const formSchema = z.object({
   image: z
     .any()
@@ -50,27 +58,66 @@ const formSchema = z.object({
   title: z.string().min(2, {
     message: 'Product name must be at least 2 characters.'
   }),
-  category: z.string(),
-  price: z.number(),
+  type: z.enum(['drinks', 'appetizers', 'mains', 'desserts', 'sides'], {
+    required_error: 'Product type is required.'
+  }),
+  price: z.number().min(0, {
+    message: 'Price must be a positive number.'
+  }),
   description: z.string().min(10, {
     message: 'Description must be at least 10 characters.'
+  }),
+  definition: z.array(z.string()).min(1, {
+    message: 'At least one definition is required.'
   })
 });
 
 type ProductFormProps = {
-  productId?: string; // For editing existing products
-  initialData?: any | null; // For direct data passing (optional)
+  productId?: string;
+  initialData?: any | null;
   pageTitle: string;
   mode?: 'create' | 'edit';
+  onSuccess?: () => void;
+  redirectPath?: string;
 };
+
+// Function to upload image and get URL (you'll need to implement this)
+async function uploadImageToServer(file: File): Promise<string> {
+  // This is a placeholder - implement your actual image upload logic
+  // You might use a service like Cloudinary, AWS S3, or your own upload endpoint
+
+  const formData = new FormData();
+  formData.append('image', file);
+
+  try {
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload image');
+    }
+
+    const result = await response.json();
+    return result.imageUrl; // Assuming your upload endpoint returns { imageUrl: string }
+  } catch (error) {
+    console.error('Upload error:', error);
+    throw new Error('Failed to upload image');
+  }
+}
 
 export default function ProductForm({
   productId,
   initialData,
   pageTitle,
-  mode = 'create'
+  mode = 'create',
+  onSuccess,
+  redirectPath
 }: ProductFormProps) {
-  // Use useProduct hook when we have a productId (for editing)
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const {
     data: fetchedProduct,
     loading: isLoadingProduct,
@@ -78,14 +125,18 @@ export default function ProductForm({
     refetch: refetchProduct
   } = useProduct(productId || '');
 
-  // Determine which product data to use
+  const [createProduct] = useCreateProduct();
+  const [updateProduct] = useUpdateProduct();
+
   const productData = initialData || fetchedProduct;
 
   const defaultValues = {
-    name: '',
-    category: '',
+    title: '',
+    type: '',
     price: 0,
-    description: ''
+    description: '',
+    definition: [''],
+    image: undefined
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -93,41 +144,96 @@ export default function ProductForm({
     defaultValues
   });
 
-  // Update form when product data is loaded
   useEffect(() => {
     if (productData) {
       form.reset({
         title: productData.title || '',
-        category: productData.category || '',
+        type: productData.type || '',
         price: productData.price || 0,
         description: productData.description || '',
-        // Note: image field handling would depend on your FileUploader implementation
-        // You might need to convert existing image URLs to the expected format
-        image: productData.imageUrl ? [] : undefined // Adjust based on your needs
+        definition: productData.definition || [''],
+        image: productData.image ? [] : undefined
       });
     }
   }, [productData, form]);
 
-  // Handle form submission
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
+
     try {
-      if (mode === 'edit' && productId) {
-        // Update existing product
-        console.log('Updating product:', productId, values);
-        // Call your update mutation here
-        // await updateProduct({ id: productId, ...values });
-      } else {
-        // Create new product
-        console.log('Creating new product:', values);
-        // Call your create mutation here
-        // await createProduct(values);
+      let imageUrl = '';
+
+      // Upload image if provided
+      if (values.image && values.image.length > 0) {
+        try {
+          imageUrl = await uploadImageToServer(values.image[0]);
+        } catch (uploadError) {
+          toast.error('Failed to upload image. Please try again.');
+          setIsSubmitting(false);
+          return;
+        }
       }
-    } catch (error) {
+
+      // Prepare the data for GraphQL mutation with correct field names
+      const productInput = {
+        title: values.title.trim(),
+        type: values.type, // This should match your ProductType enum
+        price: values.price,
+        description: values.description.trim(),
+        definition: values.definition.filter((def) => def.trim() !== ''), // Remove empty definitions
+        image: imageUrl // Use 'image' not 'imageUrl'
+      };
+
+      console.log('Submitting product input:', productInput); // Debug log
+
+      if (mode === 'edit' && productId) {
+        const { data } = await updateProduct({
+          variables: {
+            id: productId,
+            input: productInput
+          }
+        });
+
+        if (data?.updateProduct) {
+          toast.success('Product updated successfully!');
+          onSuccess?.();
+          if (redirectPath) {
+            router.push(redirectPath);
+          }
+        }
+      } else {
+        const { data } = await createProduct({
+          variables: {
+            input: productInput
+          }
+        });
+
+        if (data?.createProduct) {
+          toast.success('Product created successfully!');
+          form.reset(defaultValues);
+          onSuccess?.();
+          if (redirectPath) {
+            router.push(redirectPath);
+          }
+        }
+      }
+    } catch (error: any) {
       console.error('Error submitting form:', error);
+
+      // More specific error handling
+      if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+        const graphQLError = error.graphQLErrors[0];
+        toast.error(`GraphQL Error: ${graphQLError.message}`);
+      } else if (error.networkError) {
+        toast.error('Network error. Please check your connection.');
+      } else {
+        toast.error(error.message || 'Something went wrong. Please try again.');
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
-  // Handle loading state
   if (mode === 'edit' && productId && isLoadingProduct) {
     return (
       <Card className='mx-auto w-full'>
@@ -148,7 +254,6 @@ export default function ProductForm({
     );
   }
 
-  // Handle error state
   if (mode === 'edit' && productId && productError) {
     return (
       <Card className='mx-auto w-full'>
@@ -187,13 +292,9 @@ export default function ProductForm({
                       <FileUploader
                         value={field.value}
                         onValueChange={field.onChange}
-                        maxFiles={4}
+                        maxFiles={1} // Changed to 1 since schema expects single image
                         maxSize={4 * 1024 * 1024}
-                        // disabled={loading}
-                        // progresses={progresses}
-                        // pass the onUpload function here for direct upload
-                        // onUpload={uploadFiles}
-                        // disabled={isUploading}
+                        disabled={isSubmitting}
                       />
                     </FormControl>
                     <FormMessage />
@@ -210,41 +311,47 @@ export default function ProductForm({
                   <FormItem>
                     <FormLabel>Product Name</FormLabel>
                     <FormControl>
-                      <Input placeholder='Enter product name' {...field} />
+                      <Input
+                        placeholder='Enter product name'
+                        disabled={isSubmitting}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* Changed from category to type */}
               <FormField
                 control={form.control}
-                name='category'
+                name='type'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Category</FormLabel>
+                    <FormLabel>Product Type</FormLabel>
                     <Select
                       onValueChange={(value) => field.onChange(value)}
                       value={field.value}
+                      disabled={isSubmitting}
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder='Select categories' />
+                          <SelectValue placeholder='Select product type' />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value='beauty'>Beauty Products</SelectItem>
-                        <SelectItem value='electronics'>Electronics</SelectItem>
-                        <SelectItem value='clothing'>Clothing</SelectItem>
-                        <SelectItem value='home'>Home & Garden</SelectItem>
-                        <SelectItem value='sports'>
-                          Sports & Outdoors
-                        </SelectItem>
+                        {PRODUCT_TYPES.map((type) => (
+                          <SelectItem key={type.value} value={type.value}>
+                            {type.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name='price'
@@ -255,11 +362,14 @@ export default function ProductForm({
                       <Input
                         type='number'
                         step='0.01'
+                        min='0'
                         placeholder='Enter price'
+                        disabled={isSubmitting}
                         {...field}
-                        onChange={(e) =>
-                          field.onChange(parseFloat(e.target.value) || 0)
-                        }
+                        onChange={(e) => {
+                          const value = parseFloat(e.target.value) || 0;
+                          field.onChange(value);
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -267,6 +377,7 @@ export default function ProductForm({
                 )}
               />
             </div>
+
             <FormField
               control={form.control}
               name='description'
@@ -277,6 +388,7 @@ export default function ProductForm({
                     <Textarea
                       placeholder='Enter product description'
                       className='resize-none'
+                      disabled={isSubmitting}
                       {...field}
                     />
                   </FormControl>
@@ -284,8 +396,74 @@ export default function ProductForm({
                 </FormItem>
               )}
             />
-            <Button type='submit' disabled={isLoadingProduct}>
-              {mode === 'edit' ? 'Update Product' : 'Add Product'}
+
+            {/* Add definition field */}
+            <FormField
+              control={form.control}
+              name='definition'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Product Definitions</FormLabel>
+                  <FormControl>
+                    <div className='space-y-2'>
+                      {field.value.map((definition, index) => (
+                        <div key={index} className='flex gap-2'>
+                          <Input
+                            placeholder={`Definition ${index + 1}`}
+                            value={definition}
+                            onChange={(e) => {
+                              const newDefinitions = [...field.value];
+                              newDefinitions[index] = e.target.value;
+                              field.onChange(newDefinitions);
+                            }}
+                            disabled={isSubmitting}
+                          />
+                          {field.value.length > 1 && (
+                            <Button
+                              type='button'
+                              variant='outline'
+                              size='sm'
+                              onClick={() => {
+                                const newDefinitions = field.value.filter(
+                                  (_, i) => i !== index
+                                );
+                                field.onChange(newDefinitions);
+                              }}
+                              disabled={isSubmitting}
+                            >
+                              Remove
+                            </Button>
+                          )}
+                        </div>
+                      ))}
+                      <Button
+                        type='button'
+                        variant='outline'
+                        size='sm'
+                        onClick={() => field.onChange([...field.value, ''])}
+                        disabled={isSubmitting}
+                      >
+                        Add Definition
+                      </Button>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button
+              type='submit'
+              disabled={isSubmitting || isLoadingProduct}
+              className='w-full md:w-auto'
+            >
+              {isSubmitting
+                ? mode === 'edit'
+                  ? 'Updating...'
+                  : 'Creating...'
+                : mode === 'edit'
+                  ? 'Update Product'
+                  : 'Add Product'}
             </Button>
           </form>
         </Form>
