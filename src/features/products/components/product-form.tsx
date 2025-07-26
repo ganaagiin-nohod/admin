@@ -132,7 +132,7 @@ export default function ProductForm({
 
   const defaultValues = {
     title: '',
-    type: '',
+    type: undefined as ProductType | undefined,
     price: 0,
     description: '',
     definition: [''],
@@ -148,7 +148,7 @@ export default function ProductForm({
     if (productData) {
       form.reset({
         title: productData.title || '',
-        type: productData.type || '',
+        type: (productData.type as ProductType) || undefined,
         price: productData.price || 0,
         description: productData.description || '',
         definition: productData.definition || [''],
