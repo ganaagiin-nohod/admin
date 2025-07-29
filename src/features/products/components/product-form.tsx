@@ -34,7 +34,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { PRODUCT_TYPES, ProductType } from '@/types/product';
 
-const MAX_FILE_SIZE = 5000000;
+const MAX_FILE_SIZE = 1048576; // 1MB for production compatibility
 const ACCEPTED_IMAGE_TYPES = [
   'image/jpeg',
   'image/jpg',
@@ -49,7 +49,7 @@ const formSchema = z.object({
     .refine((files) => files?.length == 1, 'Image is required.')
     .refine(
       (files) => files?.[0]?.size <= MAX_FILE_SIZE,
-      `Max file size is 5MB.`
+      `Max file size is 1MB for production compatibility.`
     )
     .refine(
       (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
@@ -293,7 +293,7 @@ export default function ProductForm({
                         value={field.value}
                         onValueChange={field.onChange}
                         maxFiles={1} // Changed to 1 since schema expects single image
-                        maxSize={4 * 1024 * 1024}
+                        maxSize={1 * 1024 * 1024}
                         disabled={isSubmitting}
                       />
                     </FormControl>
