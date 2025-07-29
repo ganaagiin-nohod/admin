@@ -1,8 +1,4 @@
-// app/api/upload/route.ts (for App Router)
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,29 +29,62 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    // Check if Cloudinary is configured
+    const hasCloudinary =
+      process.env.CLOUDINARY_CLOUD_NAME &&
+      process.env.CLOUDINARY_API_KEY &&
+      process.env.CLOUDINARY_API_SECRET;
 
-    // Create a unique filename
-    const timestamp = Date.now();
-    const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '');
-    const filename = `${timestamp}-${originalName}`;
+    if (hasCloudinary) {
+      // Use Cloudinary for production
+      const { v2: cloudinary } = await import('cloudinary');
 
-    // Save to public/uploads directory
-    const uploadDir = join(process.cwd(), 'public', 'uploads');
+      cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET
+      });
 
-    // Create uploads directory if it doesn't exist
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true });
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+
+      const uploadResponse = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream(
+            {
+              resource_type: 'image',
+              folder: 'products',
+              transformation: [
+                { width: 800, height: 800, crop: 'limit' },
+                { quality: 'auto' },
+                { format: 'auto' }
+              ]
+            },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            }
+          )
+          .end(buffer);
+      });
+
+      const result = uploadResponse as any;
+      return NextResponse.json({
+        imageUrl: result.secure_url,
+        publicId: result.public_id
+      });
+    } else {
+      // Fallback: Convert to base64 data URL for development/demo
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const base64 = buffer.toString('base64');
+      const dataUrl = `data:${file.type};base64,${base64}`;
+
+      return NextResponse.json({
+        imageUrl: dataUrl,
+        note: 'Using base64 data URL. Configure Cloudinary for production use.'
+      });
     }
-
-    const filepath = join(uploadDir, filename);
-    await writeFile(filepath, buffer);
-
-    // Return the public URL
-    const imageUrl = `/uploads/${filename}`;
-
-    return NextResponse.json({ imageUrl });
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json(

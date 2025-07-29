@@ -15,7 +15,12 @@ const baseConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'example.com',
+        hostname: 'res.cloudinary.com',
+        port: ''
+      },
+      {
+        protocol: 'https',
+        hostname: 'via.placeholder.com',
         port: ''
       }
     ]
