@@ -1,0 +1,23 @@
+{
+  "Dashboard": "Dashboard",
+  "Products": "Produkte",
+  "Orders": "Bestellungen",
+  "Customers": "Kunden",
+  "Analytics": "Analytik",
+  "Settings": "Einstellungen",
+  "Overview": "Übersicht",
+  "Search...": "Suchen...",
+  "Profile": "Profil",
+  "Logout": "Abmelden",
+  "Loading...": "Laden...",
+  "Save": "Speichern",
+  "Cancel": "Abbrechen",
+  "Delete": "Löschen",
+  "Edit": "Bearbeiten",
+  "Add": "Hinzufügen",
+  "Create": "Erstellen",
+  "Update": "Aktualisieren",
+  "Light": "Hell",
+  "Dark": "Dunkel",
+  "System": "System"
+}

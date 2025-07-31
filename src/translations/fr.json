@@ -1,0 +1,23 @@
+{
+  "Dashboard": "Tableau de bord",
+  "Products": "Produits",
+  "Orders": "Commandes",
+  "Customers": "Clients",
+  "Analytics": "Analytique",
+  "Settings": "Paramètres",
+  "Overview": "Aperçu",
+  "Search...": "Rechercher...",
+  "Profile": "Profil",
+  "Logout": "Se déconnecter",
+  "Loading...": "Chargement...",
+  "Save": "Enregistrer",
+  "Cancel": "Annuler",
+  "Delete": "Supprimer",
+  "Edit": "Modifier",
+  "Add": "Ajouter",
+  "Create": "Créer",
+  "Update": "Mettre à jour",
+  "Light": "Clair",
+  "Dark": "Sombre",
+  "System": "Système"
+}
