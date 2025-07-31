@@ -1,0 +1,23 @@
+{
+  "Dashboard": "Dashboard",
+  "Products": "Products",
+  "Orders": "Orders",
+  "Customers": "Customers",
+  "Analytics": "Analytics",
+  "Settings": "Settings",
+  "Overview": "Overview",
+  "Search...": "Search...",
+  "Profile": "Profile",
+  "Logout": "Logout",
+  "Loading...": "Loading...",
+  "Save": "Save",
+  "Cancel": "Cancel",
+  "Delete": "Delete",
+  "Edit": "Edit",
+  "Add": "Add",
+  "Create": "Create",
+  "Update": "Update",
+  "Light": "Light",
+  "Dark": "Dark",
+  "System": "System"
+}

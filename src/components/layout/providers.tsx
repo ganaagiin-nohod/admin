@@ -5,6 +5,7 @@ import { useTheme } from 'next-themes';
 import React from 'react';
 import { ActiveThemeProvider } from '../active-theme';
 import { ApolloProviderWrapper } from '../providers/apollo-provider';
+import { LanguageProvider } from '@/contexts/language-context';
 
 export default function Providers({
   activeThemeValue,
@@ -19,13 +20,15 @@ export default function Providers({
   return (
     <>
       <ActiveThemeProvider initialTheme={activeThemeValue}>
-        <ClerkProvider
-          appearance={{
-            baseTheme: resolvedTheme === 'dark' ? dark : undefined
-          }}
-        >
-          <ApolloProviderWrapper>{children}</ApolloProviderWrapper>
-        </ClerkProvider>
+        <LanguageProvider>
+          <ClerkProvider
+            appearance={{
+              baseTheme: resolvedTheme === 'dark' ? dark : undefined
+            }}
+          >
+            <ApolloProviderWrapper>{children}</ApolloProviderWrapper>
+          </ClerkProvider>
+        </LanguageProvider>
       </ActiveThemeProvider>
     </>
   );
