@@ -1,119 +1,384 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/9113740/201498864-2a900c64-d88f-4ed4-b5cf-770bcb57e1f5.png">
-  <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/9113740/201498152-b171abb8-9225-487a-821c-6ff49ee48579.png">
-</picture>
+# 🚀 Next.js Admin Dashboard with Multilanguage Support
 
-<div align="center"><strong>Next.js Admin Dashboard Starter Template With Shadcn-ui</strong></div>
-<div align="center">Built with the Next.js 15 App Router</div>
-<br />
 <div align="center">
-<a href="https://dub.sh/shadcn-dashboard">View Demo</a>
-<span>
+  <strong>A modern, feature-rich admin dashboard built with Next.js 15, Shadcn/ui, and comprehensive multilanguage support</strong>
 </div>
 
-## Overview
+<div align="center">
+  <img src="https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js" alt="Next.js 15" />
+  <img src="https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react" alt="React 19" />
+  <img src="https://img.shields.io/badge/TypeScript-5.7-blue?style=for-the-badge&logo=typescript" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Tailwind-4.0-38B2AC?style=for-the-badge&logo=tailwind-css" alt="Tailwind CSS" />
+</div>
 
-This is a starter template using the following stack:
+<br />
 
-- Framework - [Next.js 15](https://nextjs.org/13)
-- Language - [TypeScript](https://www.typescriptlang.org)
-- Auth - [Clerk](https://go.clerk.com/ILdYhn7)
-- Error tracking - [<picture><img alt="Sentry" src="public/assets/sentry.svg">
-        </picture>](https://sentry.io/for/nextjs/?utm_source=github&utm_medium=paid-community&utm_campaign=general-fy26q2-nextjs&utm_content=github-banner-project-tryfree)
-- Styling - [Tailwind CSS v4](https://tailwindcss.com)
-- Components - [Shadcn-ui](https://ui.shadcn.com)
-- Schema Validations - [Zod](https://zod.dev)
-- State Management - [Zustand](https://zustand-demo.pmnd.rs)
-- Search params state manager - [Nuqs](https://nuqs.47ng.com/)
-- Tables - [Tanstack Data Tables](https://ui.shadcn.com/docs/components/data-table) • [Dice table](https://www.diceui.com/docs/components/data-table)
-- Forms - [React Hook Form](https://ui.shadcn.com/docs/components/form)
-- Command+k interface - [kbar](https://kbar.vercel.app/)
-- Linting - [ESLint](https://eslint.org)
-- Pre-commit Hooks - [Husky](https://typicode.github.io/husky/)
-- Formatting - [Prettier](https://prettier.io)
+## ✨ Features
 
-_If you are looking for a Tanstack start dashboard template, here is the [repo](https://git.new/tanstack-start-dashboard)._
+### 🌍 **Multilanguage Support**
+- **6 Languages**: English, French, German, Russian, Chinese, Mongolian
+- **Language Switcher**: Easy language switching in header
+- **Persistent Selection**: Language preference saved in localStorage
+- **Translation Management**: Powered by lingo.dev
+- **Dynamic Loading**: Translations loaded on-demand
 
-## Pages
+### 🔐 **Authentication & Security**
+- **Clerk Integration**: Secure authentication with multiple sign-in options
+- **Social Logins**: Google, GitHub, and more
+- **User Management**: Complete profile and security settings
+- **Protected Routes**: Role-based access control
 
-| Pages                                                                                 | Specifications                                                                                                                                                                                                                                                          |
-| :------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Signup / Signin](https://go.clerk.com/ILdYhn7)      | Authentication with **Clerk** provides secure authentication and user management with multiple sign-in options including passwordless authentication, social logins, and enterprise SSO - all designed to enhance security while delivering a seamless user experience. |
-| [Dashboard (Overview)](https://shadcn-dashboard.kiranism.dev/dashboard)    | Cards with Recharts graphs for analytics. Parallel routes in the overview sections feature independent loading, error handling, and isolated component rendering. |
-| [Product](https://shadcn-dashboard.kiranism.dev/dashboard/product)         | Tanstack tables with server side searching, filter, pagination by Nuqs which is a Type-safe search params state manager in nextjs                                                                                                                                       |
-| [Product/new](https://shadcn-dashboard.kiranism.dev/dashboard/product/new) | A Product Form with shadcn form (react-hook-form + zod).                                                                                                                                                                                                                |
-| [Profile](https://shadcn-dashboard.kiranism.dev/dashboard/profile)         | Clerk's full-featured account management UI that allows users to manage their profile and security settings                                                                                                                                                             |
-| [Kanban Board](https://shadcn-dashboard.kiranism.dev/dashboard/kanban)     | A Drag n Drop task management board with dnd-kit and zustand to persist state locally.                                                                                                                                                                                  |
-| [Not Found](https://shadcn-dashboard.kiranism.dev/dashboard/notfound)      | Not Found Page Added in the root level                                                                                                                                                                                                                                  |
-| [Global Error](https://sentry.io/for/nextjs/?utm_source=github&utm_medium=paid-community&utm_campaign=general-fy26q2-nextjs&utm_content=github-banner-project-tryfree)           | A centralized error page that captures and displays errors across the application. Integrated with **Sentry** to log errors, provide detailed reports, and enable replay functionality for better debugging. |
+### 📊 **Dashboard & Analytics**
+- **Interactive Charts**: Recharts integration for data visualization
+- **Real-time Data**: Live updates and analytics
+- **Responsive Design**: Mobile-first approach
+- **Dark/Light Mode**: Theme switching with persistence
 
-## Feature based organization
+### 🛠️ **Data Management**
+- **Advanced Tables**: Tanstack tables with server-side features
+- **Search & Filter**: Real-time search with debouncing
+- **Pagination**: Efficient data loading
+- **CRUD Operations**: Complete product management
+- **File Upload**: Cloudinary integration for media
 
-```plaintext
+### 🎯 **Modern Development**
+- **App Router**: Next.js 15 App Router
+- **Server Components**: Optimized performance
+- **Type Safety**: Full TypeScript coverage
+- **Form Handling**: React Hook Form + Zod validation
+- **State Management**: Zustand for client state
+
+## 🏗️ Tech Stack
+
+| Category | Technologies |
+|----------|-------------|
+| **Framework** | Next.js 15, React 19, TypeScript 5.7 |
+| **Styling** | Tailwind CSS v4, Shadcn/ui Components |
+| **Authentication** | Clerk |
+| **Database** | MongoDB, Mongoose |
+| **State Management** | Zustand, Nuqs (URL state) |
+| **Forms** | React Hook Form, Zod |
+| **Tables** | Tanstack Table |
+| **Charts** | Recharts |
+| **File Upload** | Cloudinary |
+| **Translations** | Lingo.dev |
+| **Error Tracking** | Sentry |
+| **Development** | ESLint, Prettier, Husky |
+
+## 🌐 Supported Languages
+
+| Language | Code | Flag | Status |
+|----------|------|------|--------|
+| English | `en` | 🇺🇸 | ✅ Default |
+| French | `fr` | 🇫🇷 | ✅ Complete |
+| German | `de` | 🇩🇪 | ✅ Complete |
+| Russian | `ru` | 🇷🇺 | ✅ Complete |
+| Chinese | `zh` | 🇨🇳 | ✅ Complete |
+| Mongolian | `mn` | 🇲🇳 | ✅ Complete |
+
+## 📁 Project Structure
+
+```
 src/
-├── app/ # Next.js App Router directory
-│ ├── (auth)/ # Auth route group
-│ │ ├── (signin)/
-│ ├── (dashboard)/ # Dashboard route group
-│ │ ├── layout.tsx
-│ │ ├── loading.tsx
-│ │ └── page.tsx
-│ └── api/ # API routes
+├── app/                    # Next.js App Router
+│   ├── (auth)/            # Authentication routes
+│   ├── dashboard/         # Dashboard pages
+│   │   ├── overview/      # Analytics dashboard
+│   │   ├── product/       # Product management
+│   │   ├── reservation/   # Reservation system
+│   │   └── profile/       # User profile
+│   └── api/               # API routes
 │
-├── components/ # Shared components
-│ ├── ui/ # UI components (buttons, inputs, etc.)
-│ └── layout/ # Layout components (header, sidebar, etc.)
+├── components/            # Reusable components
+│   ├── ui/               # Shadcn/ui components
+│   ├── layout/           # Layout components
+│   │   ├── header.tsx    # Header with language switcher
+│   │   ├── app-sidebar.tsx # Navigation sidebar
+│   │   └── providers.tsx # Context providers
+│   └── language-switcher.tsx # Language selection
 │
-├── features/ # Feature-based modules
-│ ├── feature/
-│ │ ├── components/ # Feature-specific components
-│ │ ├── actions/ # Server actions
-│ │ ├── schemas/ # Form validation schemas
-│ │ └── utils/ # Feature-specific utilities
-│ │
-├── lib/ # Core utilities and configurations
-│ ├── auth/ # Auth configuration
-│ ├── db/ # Database utilities
-│ └── utils/ # Shared utilities
+├── features/             # Feature-based modules
+│   ├── products/         # Product management
+│   ├── auth/            # Authentication
+│   ├── overview/        # Dashboard analytics
+│   └── profile/         # User profile
 │
-├── hooks/ # Custom hooks
-│ └── use-debounce.ts
+├── contexts/            # React contexts
+│   └── language-context.tsx # Language state management
 │
-├── stores/ # Zustand stores
-│ └── dashboard-store.ts
+├── hooks/               # Custom hooks
+│   ├── use-t.ts         # Translation hook
+│   └── use-translations.ts # Advanced translations
 │
-└── types/ # TypeScript types
-└── index.ts
+├── translations/        # Language files
+│   ├── en.json         # English (base)
+│   ├── fr.json         # French
+│   ├── de.json         # German
+│   ├── ru.json         # Russian
+│   ├── zh.json         # Chinese
+│   └── mn.json         # Mongolian
+│
+├── lib/                # Utilities and configurations
+│   ├── translation-service.ts # Translation service
+│   ├── mongodb.ts      # Database connection
+│   └── utils.ts        # Shared utilities
+│
+└── types/              # TypeScript definitions
+    └── index.ts        # Global types
 ```
 
-## Getting Started
+## 🚀 Quick Start
 
-> [!NOTE]  
-> We are using **Next 15** with **React 19**, follow these steps:
+### Prerequisites
+- Node.js 18+ 
+- pnpm (recommended) or npm
+- MongoDB database
+- Clerk account
+- Cloudinary account (optional)
+- Lingo.dev account (optional)
 
-Clone the repo:
+### Installation
 
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/your-repo-name.git
+   cd your-repo-name
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
+
+3. **Environment setup**
+   ```bash
+   cp env.example.txt .env.local
+   ```
+
+4. **Configure environment variables**
+   ```env
+   # Authentication (Clerk)
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+   CLERK_SECRET_KEY=your_clerk_secret_key
+   
+   # Database
+   MONGODB_URI=your_mongodb_connection_string
+   
+   # File Upload (Cloudinary)
+   CLOUDINARY_CLOUD_NAME=your_cloud_name
+   CLOUDINARY_API_KEY=your_api_key
+   CLOUDINARY_API_SECRET=your_api_secret
+   
+   # Translations (Lingo.dev)
+   LINGODOTDEV_API_KEY=your_lingo_api_key
+   ```
+
+5. **Start development server**
+   ```bash
+   pnpm dev
+   ```
+
+6. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## 📖 Usage Guide
+
+### 🌍 Using Translations
+
+**In Components:**
+```tsx
+import { useT } from '@/hooks/use-t';
+
+function MyComponent() {
+  const t = useT();
+  
+  return (
+    <div>
+      <h1>{t('Dashboard')}</h1>
+      <p>{t('Welcome to the dashboard')}</p>
+    </div>
+  );
+}
 ```
-git clone https://github.com/Kiranism/next-shadcn-dashboard-starter.git
+
+**Language Context:**
+```tsx
+import { useLanguage } from '@/contexts/language-context';
+
+function LanguageExample() {
+  const { currentLanguage, setLanguage } = useLanguage();
+  
+  return (
+    <div>
+      <p>Current: {currentLanguage}</p>
+      <button onClick={() => setLanguage('fr')}>
+        Switch to French
+      </button>
+    </div>
+  );
+}
 ```
 
-- `pnpm install` ( we have legacy-peer-deps=true added in the .npmrc)
-- Create a `.env.local` file by copying the example environment file:
-  `cp env.example.txt .env.local`
-- Add the required environment variables to the `.env.local` file.
-- `pnpm run dev`
+### 📊 Data Tables
 
-##### Environment Configuration Setup
+```tsx
+import { DataTable } from '@/components/ui/data-table';
+import { columns } from './columns';
 
-To configure the environment for this project, refer to the `env.example.txt` file. This file contains the necessary environment variables required for authentication and error tracking.
+function ProductsPage() {
+  return (
+    <DataTable
+      columns={columns}
+      data={products}
+      searchKey="name"
+      placeholder="Search products..."
+    />
+  );
+}
+```
 
-You should now be able to access the application at http://localhost:3000.
+### 📝 Forms with Validation
 
-> [!WARNING]
-> After cloning or forking the repository, be cautious when pulling or syncing with the latest changes, as this may result in breaking conflicts.
+```tsx
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { productSchema } from './schema';
 
-Cheers! 🥂
-# admin
-# admin
-# admin
-# admin
+function ProductForm() {
+  const form = useForm({
+    resolver: zodResolver(productSchema),
+    defaultValues: {
+      name: '',
+      price: 0,
+    },
+  });
+  
+  return (
+    <Form {...form}>
+      {/* Form fields */}
+    </Form>
+  );
+}
+```
+
+## 🛠️ Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| `pnpm dev` | Start development server |
+| `pnpm build` | Build for production |
+| `pnpm start` | Start production server |
+| `pnpm lint` | Run ESLint |
+| `pnpm format` | Format code with Prettier |
+| `pnpm translate` | Run lingo.dev translation |
+| `pnpm translate:extract` | Extract translatable strings |
+| `pnpm translate:sync` | Sync with lingo.dev |
+
+## 📄 Key Pages
+
+| Page | Route | Description |
+|------|-------|-------------|
+| **Dashboard** | `/dashboard` | Analytics overview with charts |
+| **Products** | `/dashboard/product` | Product management with tables |
+| **Add Product** | `/dashboard/product/new` | Create new products |
+| **Reservations** | `/dashboard/reservation` | Reservation management |
+| **Profile** | `/dashboard/profile` | User profile settings |
+| **Authentication** | `/auth/sign-in` | Login page |
+
+## 🎨 Customization
+
+### Adding New Languages
+
+1. **Add language to config:**
+   ```typescript
+   // src/config/languages.ts
+   export const languages = [
+     // existing languages...
+     { code: 'es', name: 'Español', flag: '🇪🇸' },
+   ];
+   ```
+
+2. **Create translation file:**
+   ```bash
+   touch src/translations/es.json
+   ```
+
+3. **Add translations:**
+   ```json
+   {
+     "Dashboard": "Panel de Control",
+     "Products": "Productos"
+   }
+   ```
+
+### Theme Customization
+
+Modify `src/app/globals.css` and `tailwind.config.js` for custom themes.
+
+### Adding New Features
+
+1. Create feature directory in `src/features/`
+2. Add components, hooks, and utilities
+3. Update navigation in `src/constants/data.ts`
+
+## 🔧 Configuration Files
+
+- **`next.config.ts`** - Next.js configuration
+- **`tailwind.config.js`** - Tailwind CSS setup
+- **`lingo.config.js`** - Translation configuration
+- **`components.json`** - Shadcn/ui configuration
+- **`.eslintrc.json`** - ESLint rules
+- **`.prettierrc`** - Prettier formatting
+
+## 🚀 Deployment
+
+### Vercel (Recommended)
+
+1. Push to GitHub
+2. Connect to Vercel
+3. Add environment variables
+4. Deploy automatically
+
+### Docker
+
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+EXPOSE 3000
+CMD ["npm", "start"]
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Shadcn/ui](https://ui.shadcn.com/) for the beautiful components
+- [Clerk](https://clerk.com/) for authentication
+- [Lingo.dev](https://lingo.dev/) for translation management
+- [Next.js](https://nextjs.org/) team for the amazing framework
+
+## 📞 Support
+
+- 📧 Email: your-email@example.com
+- 💬 Discord: [Join our community](https://discord.gg/your-invite)
+- 🐛 Issues: [GitHub Issues](https://github.com/your-username/your-repo/issues)
+
+---
+
+<div align="center">
+  <strong>Built with ❤️ using Next.js and modern web technologies</strong>
+</div>
