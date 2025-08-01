@@ -1,7 +1,6 @@
 import type { NextConfig } from 'next';
 import { withSentryConfig } from '@sentry/nextjs';
 
-// Define the base Next.js configuration
 const baseConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true
