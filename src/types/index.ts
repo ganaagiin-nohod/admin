@@ -33,3 +33,64 @@ export interface FooterItem {
 export type MainNavItem = NavItemWithOptionalChildren;
 
 export type SidebarNavItem = NavItemWithChildren;
+
+export interface Reservation {
+  id: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  date: string;
+  time: string;
+  partySize: number;
+  specialRequests?: string;
+  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+  tableNumber?: string;
+  source:
+    | 'website'
+    | 'opentable'
+    | 'resy'
+    | 'partner'
+    | 'mobile_app'
+    | 'phone'
+    | 'walk_in';
+  externalId?: string;
+  metadata?: {
+    platform?: string;
+    referenceNumber?: string;
+    commission?: number;
+    partnerFee?: number;
+    originalUrl?: string;
+    userAgent?: string;
+    ipAddress?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateReservationData {
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  date: string;
+  time: string;
+  partySize: number;
+  specialRequests?: string;
+  source?:
+    | 'website'
+    | 'opentable'
+    | 'resy'
+    | 'partner'
+    | 'mobile_app'
+    | 'phone'
+    | 'walk_in';
+  externalId?: string;
+  metadata?: {
+    platform?: string;
+    referenceNumber?: string;
+    commission?: number;
+    partnerFee?: number;
+    originalUrl?: string;
+    userAgent?: string;
+    ipAddress?: string;
+  };
+}
