@@ -2,9 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    // Basic health check
-    console.log('Upload API called');
-
     const data = await request.formData();
     const file: File | null = data.get('image') as unknown as File;
 
@@ -15,7 +12,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file type
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
@@ -23,8 +19,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
-    // Strict file size limit for Vercel (1MB)
     if (file.size > 5000000) {
       return NextResponse.json(
         { error: 'File size too large. Maximum size is 1MB for production.' },
@@ -32,7 +26,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Convert to base64 with error handling
     let dataUrl: string;
     try {
       const bytes = await file.arrayBuffer();
@@ -54,7 +47,6 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Upload API error:', error);
 
-    // Return a more specific error message
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown server error';
 
