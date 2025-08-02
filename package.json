@@ -21,7 +21,8 @@
     "translate:sync": "lingo sync",
     "pre-deploy": "node scripts/pre-deploy-check.js",
     "check-env": "node scripts/check-env.js",
-    "deploy": "npm run pre-deploy && vercel --prod"
+    "generate-vercel-env": "node scripts/generate-vercel-env.js",
+    "deploy": "pnpm run pre-deploy && vercel --prod"
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts,css,less,scss,sass}": [
