@@ -20,7 +20,7 @@ export function useProduct(id: string) {
   return useQuery(GET_PRODUCT, {
     variables: { id },
     errorPolicy: 'all',
-    skip: !id || id.trim() === '' || id === 'new' // Skip query if ID is invalid
+    skip: !id || id.trim() === '' || id === 'new'
   });
 }
 
@@ -35,7 +35,6 @@ export function useCreateProduct() {
 
   return useMutation(CREATE_PRODUCT, {
     onCompleted: () => {
-      // Refetch products after creating
       client.refetchQueries({
         include: [GET_PRODUCTS, GET_ALL_PRODUCTS]
       });
@@ -48,7 +47,6 @@ export function useUpdateProduct() {
 
   return useMutation(UPDATE_PRODUCT, {
     onCompleted: () => {
-      // Refetch products after updating
       client.refetchQueries({
         include: [GET_PRODUCTS, GET_ALL_PRODUCTS]
       });
@@ -61,7 +59,6 @@ export function useDeleteProduct() {
 
   return useMutation(DELETE_PRODUCT, {
     onCompleted: () => {
-      // Refetch products after deleting
       client.refetchQueries({
         include: [GET_PRODUCTS, GET_ALL_PRODUCTS]
       });
@@ -74,7 +71,6 @@ export function useToggleProductAvailability() {
 
   return useMutation(TOGGLE_PRODUCT_AVAILABILITY, {
     onCompleted: () => {
-      // Refetch products after toggling availability
       client.refetchQueries({
         include: [GET_PRODUCTS, GET_ALL_PRODUCTS]
       });

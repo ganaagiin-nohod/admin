@@ -17,7 +17,6 @@ export function useT() {
           `Failed to load translations for ${currentLanguage}:`,
           error
         );
-        // Fallback to English
         try {
           const fallback = await import('@/translations/en.json');
           setTranslations(fallback.default);
