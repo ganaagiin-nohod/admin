@@ -15,6 +15,10 @@ export interface IWebsite extends mongoose.Document {
   slug: string;
   title: string;
   components: IWebsiteComponent[];
+  deploymentUrl?: string;
+  deploymentId?: string;
+  deploymentStatus?: 'pending' | 'deployed' | 'failed';
+  customDomain?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -55,6 +59,23 @@ const WebsiteSchema = new mongoose.Schema({
     trim: true
   },
   components: [WebsiteComponentSchema],
+  deploymentUrl: {
+    type: String,
+    sparse: true
+  },
+  deploymentId: {
+    type: String,
+    sparse: true
+  },
+  deploymentStatus: {
+    type: String,
+    enum: ['pending', 'deployed', 'failed'],
+    default: 'pending'
+  },
+  customDomain: {
+    type: String,
+    sparse: true
+  },
   createdAt: {
     type: Date,
     default: Date.now

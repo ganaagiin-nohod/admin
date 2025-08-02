@@ -128,6 +128,36 @@ export default function WebsiteBuilderPage() {
     });
   };
 
+  const deployWebsite = async (websiteId: string) => {
+    if (!websiteId) {
+      toast.error('Website ID is required');
+      return;
+    }
+
+    toast.loading('Deploying your website...', { id: 'deploy' });
+
+    try {
+      const response = await fetch('/api/deploy-site', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ websiteId, deploymentType: 'vercel' })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success(`Website deployed successfully! 🎉`, { id: 'deploy' });
+        toast.success(`Live at: ${data.url}`, { duration: 10000 });
+        fetchWebsites(); // Refresh to show deployment URL
+      } else {
+        toast.error(`Deployment failed: ${data.error}`, { id: 'deploy' });
+      }
+    } catch (error) {
+      console.error('Deployment error:', error);
+      toast.error('Deployment failed', { id: 'deploy' });
+    }
+  };
+
   return (
     <div className='container mx-auto p-6'>
       <div className='mb-6 flex items-center justify-between'>
@@ -153,9 +183,9 @@ export default function WebsiteBuilderPage() {
             </CardHeader>
             <CardContent>
               <div className='space-y-2'>
-                {websites.map((website) => (
+                {websites.map((website, index) => (
                   <div
-                    key={website._id}
+                    key={website._id?.toString() || `website-${index}`}
                     className='cursor-pointer rounded border p-3 hover:bg-gray-50'
                     onClick={() => loadWebsite(website)}
                   >
@@ -172,7 +202,28 @@ export default function WebsiteBuilderPage() {
                       >
                         <Eye className='h-3 w-3' />
                       </Button>
+                      <Button
+                        size='sm'
+                        variant='default'
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deployWebsite(website._id?.toString() || '');
+                        }}
+                      >
+                        🚀
+                      </Button>
                     </div>
+                    {website.deploymentUrl && (
+                      <div className='mt-1'>
+                        <a
+                          href={website.deploymentUrl}
+                          target='_blank'
+                          className='text-xs text-blue-600 hover:underline'
+                        >
+                          {website.deploymentUrl}
+                        </a>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
