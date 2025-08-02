@@ -20,6 +20,7 @@
     "translate:extract": "lingo extract",
     "translate:sync": "lingo sync",
     "pre-deploy": "node scripts/pre-deploy-check.js",
+    "check-env": "node scripts/check-env.js",
     "deploy": "npm run pre-deploy && vercel --prod"
   },
   "lint-staged": {
