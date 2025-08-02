@@ -13,7 +13,6 @@ import { UserAvatarProfile } from '@/components/user-avatar-profile';
 import { SignOutButton, useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { useT } from '@/hooks/use-t';
-import Profile from '../translation/profile';
 export function UserNav() {
   const { user } = useUser();
   const router = useRouter();
