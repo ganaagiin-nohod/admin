@@ -18,7 +18,9 @@
     "prepare": "husky",
     "translate": "lingo translate",
     "translate:extract": "lingo extract",
-    "translate:sync": "lingo sync"
+    "translate:sync": "lingo sync",
+    "pre-deploy": "node scripts/pre-deploy-check.js",
+    "deploy": "npm run pre-deploy && vercel --prod"
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts,css,less,scss,sass}": [
