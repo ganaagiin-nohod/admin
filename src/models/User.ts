@@ -18,13 +18,11 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true,
     trim: true,
     lowercase: true
   },
   clerkId: {
     type: String,
-    unique: true,
     sparse: true
   },
   createdAt: {
@@ -42,8 +40,8 @@ UserSchema.pre('save', function (next) {
   next();
 });
 
-UserSchema.index({ email: 1 });
-UserSchema.index({ clerkId: 1 });
+UserSchema.index({ email: 1 }, { unique: true });
+UserSchema.index({ clerkId: 1 }, { unique: true, sparse: true });
 
 export default mongoose.models.User ||
   mongoose.model<IUser>('User', UserSchema);

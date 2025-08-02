@@ -60,8 +60,7 @@ const reservationSchema = new mongoose.Schema(
     },
     externalId: {
       type: String,
-      trim: true,
-      sparse: true
+      trim: true
     },
     metadata: {
       platform: String,

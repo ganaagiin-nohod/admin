@@ -43,8 +43,7 @@ const WebsiteComponentSchema = new mongoose.Schema(
 const WebsiteSchema = new mongoose.Schema({
   userId: {
     type: String,
-    required: true,
-    index: true
+    required: true
   },
   slug: {
     type: String,
