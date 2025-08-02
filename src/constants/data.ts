@@ -35,6 +35,14 @@ export const navItems: NavItem[] = [
     items: [] // Empty array as there are no child items for Dashboard
   },
   {
+    title: 'Website Builder',
+    url: '/dashboard/website-builder',
+    icon: 'website',
+    isActive: false,
+    shortcut: ['w', 'b'],
+    items: [] // Empty array as there are no child items
+  },
+  {
     title: 'Reservation',
     url: '/dashboard/reservation',
     icon: 'reservation',
