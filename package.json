@@ -22,6 +22,7 @@
     "pre-deploy": "node scripts/pre-deploy-check.js",
     "check-env": "node scripts/check-env.js",
     "generate-vercel-env": "node scripts/generate-vercel-env.js",
+    "test-deploy": "node scripts/test-before-deploy.js",
     "deploy": "pnpm run pre-deploy && vercel --prod"
   },
   "lint-staged": {
