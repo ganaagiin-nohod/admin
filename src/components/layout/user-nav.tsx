@@ -12,9 +12,11 @@ import {
 import { UserAvatarProfile } from '@/components/user-avatar-profile';
 import { SignOutButton, useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
+import { useT } from '@/hooks/use-t';
 export function UserNav() {
   const { user } = useUser();
   const router = useRouter();
+  const t = useT();
   if (user) {
     return (
       <DropdownMenu>
@@ -42,7 +44,7 @@ export function UserNav() {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem onClick={() => router.push('/dashboard/profile')}>
-              Profile
+              {t('Profile')}
             </DropdownMenuItem>
             <DropdownMenuItem>Billing</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
