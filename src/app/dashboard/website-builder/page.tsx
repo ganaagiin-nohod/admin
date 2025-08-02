@@ -134,27 +134,47 @@ export default function WebsiteBuilderPage() {
       return;
     }
 
-    toast.loading('Deploying your website...', { id: 'deploy' });
+    toast.loading(
+      '🚀 Creating real Vercel project... (this may take 1-2 minutes)',
+      { id: 'deploy' }
+    );
 
     try {
-      const response = await fetch('/api/deploy-site', {
+      console.log('🚀 Starting deployment for website:', websiteId);
+
+      // Try working deployment
+      const response = await fetch('/api/deploy-working', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ websiteId, deploymentType: 'vercel' })
+        body: JSON.stringify({ websiteId })
       });
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Response error:', errorText);
+        toast.error(`HTTP ${response.status}: ${errorText}`, { id: 'deploy' });
+        return;
+      }
+
       const data = await response.json();
+      console.log('📦 Response data:', data);
 
       if (data.success) {
-        toast.success(`Website deployed successfully! 🎉`, { id: 'deploy' });
-        toast.success(`Live at: ${data.url}`, { duration: 10000 });
+        toast.success(`🎉 Website deployed successfully!`, { id: 'deploy' });
+        toast.success(`🌐 Live at: ${data.url}`, { duration: 15000 });
         fetchWebsites(); // Refresh to show deployment URL
       } else {
         toast.error(`Deployment failed: ${data.error}`, { id: 'deploy' });
+        if (data.details) {
+          console.error('Error details:', data.details);
+        }
       }
     } catch (error) {
-      console.error('Deployment error:', error);
-      toast.error('Deployment failed', { id: 'deploy' });
+      console.error('❌ Deployment error:', error);
+      toast.error(
+        `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        { id: 'deploy' }
+      );
     }
   };
 
@@ -209,6 +229,7 @@ export default function WebsiteBuilderPage() {
                           e.stopPropagation();
                           deployWebsite(website._id?.toString() || '');
                         }}
+                        title='Prepare for deployment'
                       >
                         🚀
                       </Button>
@@ -218,10 +239,13 @@ export default function WebsiteBuilderPage() {
                         <a
                           href={website.deploymentUrl}
                           target='_blank'
-                          className='text-xs text-blue-600 hover:underline'
+                          className='text-xs font-medium text-green-600 hover:underline'
                         >
-                          {website.deploymentUrl}
+                          🌐 {website.deploymentUrl}
                         </a>
+                        <div className='mt-1 text-xs text-gray-500'>
+                          Status: {website.deploymentStatus || 'deployed'}
+                        </div>
                       </div>
                     )}
                   </div>
