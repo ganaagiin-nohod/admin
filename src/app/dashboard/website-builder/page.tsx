@@ -22,10 +22,13 @@ import {
   ImageIcon,
   User,
   Mail,
-  ExternalLink
+  ExternalLink,
+  Sparkles,
+  Wand2
 } from 'lucide-react';
 import type { IWebsite, IWebsiteComponent } from '@/models/Website';
 import ImageUpload from '@/components/website/ImageUpload';
+import AIContentDialog from '@/components/website/AIContentDialog';
 
 export default function WebsiteBuilderPage() {
   const { user } = useUser();
@@ -37,6 +40,8 @@ export default function WebsiteBuilderPage() {
   });
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const [showAiDialog, setShowAiDialog] = useState(false);
 
   useEffect(() => {
     fetchWebsites();
@@ -192,6 +197,84 @@ export default function WebsiteBuilderPage() {
         `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`,
         { id: 'deploy' }
       );
+    }
+  };
+
+  const generateAIContent = async (
+    description: string,
+    businessType: string,
+    tone: string
+  ) => {
+    setAiGenerating(true);
+    try {
+      const response = await fetch('/api/generate-content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          description,
+          businessType,
+          tone,
+          fullWebsite: true
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        const { hero, about, products, contact } = data.content;
+
+        // Create components from AI-generated content
+        const aiComponents: IWebsiteComponent[] = [];
+
+        if (hero) {
+          aiComponents.push({
+            type: 'hero',
+            title: hero.title,
+            subtitle: hero.subtitle
+          });
+        }
+
+        if (about) {
+          aiComponents.push({
+            type: 'about',
+            title: about.title,
+            text: about.text
+          });
+        }
+
+        if (products && products.products) {
+          aiComponents.push({
+            type: 'products',
+            title: products.title,
+            products: products.products
+          });
+        }
+
+        if (contact) {
+          aiComponents.push({
+            type: 'contact',
+            title: contact.title,
+            text: contact.text,
+            email: user?.emailAddresses[0]?.emailAddress || ''
+          });
+        }
+
+        // Update current website with AI-generated content
+        setCurrentWebsite((prev) => ({
+          ...prev,
+          components: aiComponents
+        }));
+
+        toast.success('🤖 AI content generated successfully!');
+        setShowAiDialog(false);
+      } else {
+        toast.error('Failed to generate AI content: ' + data.error);
+      }
+    } catch (error) {
+      console.error('AI generation error:', error);
+      toast.error('Failed to generate AI content');
+    } finally {
+      setAiGenerating(false);
     }
   };
 
@@ -426,10 +509,20 @@ export default function WebsiteBuilderPage() {
                   </TabsContent>
 
                   <TabsContent value='components' className='mt-6 space-y-6'>
-                    <div className='flex flex-wrap gap-3 rounded-lg border bg-gray-50 p-4'>
-                      <p className='mb-2 w-full text-sm font-medium text-gray-700'>
-                        Add Components
-                      </p>
+                    <div className='flex flex-wrap gap-3 rounded-lg border bg-gradient-to-r from-purple-50 to-blue-50 p-4'>
+                      <div className='mb-2 flex w-full items-center justify-between'>
+                        <p className='text-sm font-medium text-gray-700'>
+                          Add Components
+                        </p>
+                        <Button
+                          onClick={() => setShowAiDialog(true)}
+                          size='sm'
+                          className='bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700'
+                        >
+                          <Sparkles className='mr-2 h-3 w-3' />
+                          Generate with AI
+                        </Button>
+                      </div>
                       <Button
                         onClick={() => addComponent('hero')}
                         size='sm'
@@ -509,6 +602,14 @@ export default function WebsiteBuilderPage() {
           </div>
         </div>
       </div>
+
+      {/* AI Content Generation Dialog */}
+      <AIContentDialog
+        open={showAiDialog}
+        onOpenChange={setShowAiDialog}
+        onGenerate={generateAIContent}
+        generating={aiGenerating}
+      />
     </div>
   );
 }

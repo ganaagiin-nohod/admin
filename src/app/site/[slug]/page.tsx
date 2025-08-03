@@ -10,7 +10,6 @@ interface PageProps {
 
 async function getWebsite(slug: string): Promise<IWebsite | null> {
   try {
-    // For demo site, create it if it doesn't exist
     if (slug === 'demo-portfolio') {
       await connectDB();
       let demoWebsite = await Website.findOne({ slug: 'demo-portfolio' });
@@ -57,7 +56,6 @@ async function getWebsite(slug: string): Promise<IWebsite | null> {
       return demoWebsite;
     }
 
-    // For regular websites, fetch from database
     await connectDB();
     const website = await Website.findOne({ slug });
     return website;
