@@ -1,13 +1,20 @@
 import mongoose from 'mongoose';
 
 export interface IWebsiteComponent {
-  type: 'hero' | 'about' | 'gallery' | 'contact';
+  type: 'hero' | 'about' | 'gallery' | 'contact' | 'products';
   title?: string;
   subtitle?: string;
   text?: string;
   image?: string;
   images?: string[];
   email?: string;
+  products?: {
+    name: string;
+    description: string;
+    price: number;
+    image?: string;
+    link?: string;
+  }[];
 }
 
 export interface IWebsite extends mongoose.Document {
@@ -27,7 +34,7 @@ const WebsiteComponentSchema = new mongoose.Schema(
   {
     type: {
       type: String,
-      enum: ['hero', 'about', 'gallery', 'contact'],
+      enum: ['hero', 'about', 'gallery', 'contact', 'products'],
       required: true
     },
     title: String,
@@ -35,7 +42,16 @@ const WebsiteComponentSchema = new mongoose.Schema(
     text: String,
     image: String,
     images: [String],
-    email: String
+    email: String,
+    products: [
+      {
+        name: String,
+        description: String,
+        price: Number,
+        image: String,
+        link: String
+      }
+    ]
   },
   { _id: false }
 );

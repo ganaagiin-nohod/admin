@@ -56,7 +56,7 @@ export class VercelDeployer {
       })),
       projectSettings: {
         framework: 'nextjs',
-        buildCommand: 'npm run build',
+        buildCommand: 'pnpm build',
         outputDirectory: 'out'
       },
       target: 'production'
