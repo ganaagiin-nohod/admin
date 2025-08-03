@@ -245,6 +245,16 @@ async function deployToVercel(website: any, vercelToken: string) {
 
 function generateFiles(website: any) {
   const heroSection = website.components?.find((c: any) => c.type === 'hero');
+  const aboutSection = website.components?.find((c: any) => c.type === 'about');
+  const gallerySection = website.components?.find(
+    (c: any) => c.type === 'gallery'
+  );
+  const contactSection = website.components?.find(
+    (c: any) => c.type === 'contact'
+  );
+  const productsSection = website.components?.find(
+    (c: any) => c.type === 'products'
+  );
 
   const cleanText = (text: string) => {
     if (!text) return '';
@@ -253,14 +263,14 @@ function generateFiles(website: any) {
       .replace(/[\n\r\t]/g, ' ') // Replace newlines and tabs with spaces
       .replace(/[^\x20-\x7E]/g, '') // Remove non-printable ASCII characters
       .replace(/\s+/g, ' ') // Collapse multiple spaces
-      .substring(0, 50)
+      .substring(0, 200) // Increased limit
       .trim();
   };
 
   const title = cleanText(heroSection?.title || website.title || 'Welcome');
   const subtitle = cleanText(heroSection?.subtitle || 'My Website');
 
-  // Minimal package.json with current working versions
+  // Package.json
   const packageJson = {
     name: 'site',
     version: '1.0.0',
@@ -277,7 +287,7 @@ function generateFiles(website: any) {
     }
   };
 
-  // Simple next.config.js for static export - minimal config
+  // Next.js config
   const nextConfig = `const nextConfig = {
   output: 'export',
   trailingSlash: true,
@@ -294,40 +304,238 @@ function generateFiles(website: any) {
 
 module.exports = nextConfig`;
 
-  // Clean React page
+  // Build sections array to avoid undefined variables
+  const sections = [];
+
+  // Hero Section (always show if exists)
+  if (heroSection) {
+    sections.push(`
+      React.createElement('div', {
+        style: {
+          background: 'linear-gradient(to right, #2563eb, #9333ea)',
+          color: 'white',
+          padding: '80px 20px',
+          textAlign: 'center'
+        }
+      }, React.createElement('div', {
+        style: { maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }
+      }, [
+        React.createElement('h1', {
+          key: 'title',
+          style: { fontSize: '3rem', fontWeight: 'bold', marginBottom: '1rem' }
+        }, '${cleanText(heroSection.title || 'Welcome')}'),
+        React.createElement('p', {
+          key: 'subtitle',
+          style: { fontSize: '1.25rem', opacity: 0.9 }
+        }, '${cleanText(heroSection.subtitle || 'Welcome to my website')}')
+      ]))
+    `);
+  }
+
+  // About Section
+  if (aboutSection) {
+    sections.push(`
+      React.createElement('div', {
+        style: { padding: '64px 20px', backgroundColor: '#f9fafb' }
+      }, React.createElement('div', {
+        style: { maxWidth: '1200px', margin: '0 auto' }
+      }, React.createElement('div', {
+        style: { 
+          display: 'grid', 
+          gridTemplateColumns: '${aboutSection.image ? 'repeat(2, 1fr)' : '1fr'}', 
+          gap: '2rem', 
+          alignItems: 'center' 
+        }
+      }, [
+        React.createElement('div', { key: 'content' }, [
+          React.createElement('h2', {
+            key: 'title',
+            style: { fontSize: '2rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#1f2937' }
+          }, '${cleanText(aboutSection.title || 'About Me')}'),
+          React.createElement('p', {
+            key: 'text',
+            style: { color: '#4b5563', lineHeight: '1.6' }
+          }, '${cleanText(aboutSection.text || 'Tell your story here...')}')
+        ])${
+          aboutSection.image
+            ? `,
+        React.createElement('div', {
+          key: 'image',
+          style: { position: 'relative', height: '20rem' }
+        }, React.createElement('img', {
+          src: '${aboutSection.image}',
+          alt: 'About',
+          style: { width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0.5rem' }
+        }))`
+            : ''
+        }
+      ])))
+    `);
+  }
+
+  // Gallery Section
+  if (gallerySection && gallerySection.images?.length > 0) {
+    const galleryImages = gallerySection.images
+      .map(
+        (image: string, idx: number) => `
+      React.createElement('div', {
+        key: ${idx},
+        style: { position: 'relative', height: '16rem', overflow: 'hidden', borderRadius: '0.5rem' }
+      }, React.createElement('img', {
+        src: '${image}',
+        alt: 'Gallery image',
+        style: { width: '100%', height: '100%', objectFit: 'cover' }
+      }))
+    `
+      )
+      .join(',');
+
+    sections.push(`
+      React.createElement('div', {
+        style: { padding: '64px 20px' }
+      }, React.createElement('div', {
+        style: { maxWidth: '1200px', margin: '0 auto' }
+      }, [
+        React.createElement('h2', {
+          key: 'title',
+          style: { fontSize: '2rem', fontWeight: 'bold', marginBottom: '2rem', textAlign: 'center', color: '#1f2937' }
+        }, '${cleanText(gallerySection.title || 'Gallery')}'),
+        React.createElement('div', {
+          key: 'grid',
+          style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }
+        }, [${galleryImages}])
+      ]))
+    `);
+  }
+
+  // Products Section
+  if (productsSection && productsSection.products?.length > 0) {
+    const productCards = productsSection.products
+      .map(
+        (product: any, idx: number) => `
+      React.createElement('div', {
+        key: ${idx},
+        style: { backgroundColor: 'white', borderRadius: '0.5rem', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }
+      }, [
+        ${
+          product.image
+            ? `React.createElement('img', {
+          key: 'image',
+          src: '${product.image}',
+          alt: '${cleanText(product.name || 'Product')}',
+          style: { width: '100%', height: '12rem', objectFit: 'cover', borderRadius: '0.5rem', marginBottom: '1rem' }
+        }),`
+            : ''
+        }
+        React.createElement('h3', {
+          key: 'name',
+          style: { fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#1f2937' }
+        }, '${cleanText(product.name || 'Product')}'),
+        React.createElement('p', {
+          key: 'description',
+          style: { color: '#6b7280', marginBottom: '1rem', fontSize: '0.875rem' }
+        }, '${cleanText(product.description || '')}'),
+        React.createElement('div', {
+          key: 'footer',
+          style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' }
+        }, [
+          React.createElement('span', {
+            key: 'price',
+            style: { fontSize: '1.5rem', fontWeight: 'bold', color: '#059669' }
+          }, '$${product.price || '0'}')${
+            product.link
+              ? `,
+          React.createElement('a', {
+            key: 'link',
+            href: '${product.link}',
+            target: '_blank',
+            style: { backgroundColor: '#2563eb', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.25rem', textDecoration: 'none', fontSize: '0.875rem' }
+          }, 'Buy Now')`
+              : ''
+          }
+        ])
+      ])
+    `
+      )
+      .join(',');
+
+    sections.push(`
+      React.createElement('div', {
+        style: { padding: '64px 20px', backgroundColor: '#f9fafb' }
+      }, React.createElement('div', {
+        style: { maxWidth: '1200px', margin: '0 auto' }
+      }, [
+        React.createElement('h2', {
+          key: 'title',
+          style: { fontSize: '2rem', fontWeight: 'bold', marginBottom: '2rem', textAlign: 'center', color: '#1f2937' }
+        }, '${cleanText(productsSection.title || 'Products')}'),
+        React.createElement('div', {
+          key: 'grid',
+          style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }
+        }, [${productCards}])
+      ]))
+    `);
+  }
+
+  // Contact Section
+  if (contactSection) {
+    sections.push(`
+      React.createElement('div', {
+        style: { padding: '64px 20px', backgroundColor: '#1f2937', color: 'white' }
+      }, React.createElement('div', {
+        style: { maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }
+      }, [
+        React.createElement('h2', {
+          key: 'title',
+          style: { fontSize: '2rem', fontWeight: 'bold', marginBottom: '2rem' }
+        }, '${cleanText(contactSection.title || 'Contact Me')}')${
+          contactSection.email
+            ? `,
+        React.createElement('div', {
+          key: 'email',
+          style: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontSize: '1.125rem' }
+        }, [
+          React.createElement('svg', {
+            key: 'icon',
+            style: { width: '1.25rem', height: '1.25rem' },
+            fill: 'none',
+            stroke: 'currentColor',
+            viewBox: '0 0 24 24'
+          }, React.createElement('path', {
+            strokeLinecap: 'round',
+            strokeLinejoin: 'round',
+            strokeWidth: 2,
+            d: 'M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'
+          })),
+          React.createElement('a', {
+            key: 'link',
+            href: 'mailto:${contactSection.email}',
+            style: { color: '#60a5fa', textDecoration: 'none' }
+          }, '${contactSection.email}')
+        ])`
+            : ''
+        }${
+          contactSection.text
+            ? `,
+        React.createElement('p', {
+          key: 'text',
+          style: { marginTop: '1rem', color: '#d1d5db', maxWidth: '32rem', margin: '1rem auto 0' }
+        }, '${cleanText(contactSection.text)}')`
+            : ''
+        }
+      ]))
+    `);
+  }
+
+  // Main page with all sections
   const appPage = `import React from 'react';
 
 export default function Page() {
-  return (
-    <div style={{ fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        padding: '100px 20px',
-        textAlign: 'center',
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}>
-        <h1 style={{
-          fontSize: '3rem',
-          marginBottom: '1rem',
-          fontWeight: 'bold'
-        }}>
-          ${title}
-        </h1>
-        <p style={{
-          fontSize: '1.2rem',
-          opacity: 0.9,
-          maxWidth: '600px'
-        }}>
-          ${subtitle}
-        </p>
-      </div>
-    </div>
-  );
+  return React.createElement('div', {
+    style: { minHeight: '100vh' }
+  }, [
+    ${sections.join(',\n    ')}
+  ]);
 }`;
 
   // Root layout
@@ -341,7 +549,7 @@ export default function RootLayout({ children }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content="${subtitle}" />
       </head>
-      <body style={{ margin: 0, padding: 0 }}>
+      <body style={{ margin: 0, padding: 0, fontFamily: 'system-ui, sans-serif' }}>
         {children}
       </body>
     </html>

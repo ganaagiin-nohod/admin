@@ -3,6 +3,7 @@ import Hero from './Hero';
 import About from './About';
 import Gallery from './Gallery';
 import Contact from './Contact';
+import Products from './Products';
 
 interface WebsiteRendererProps {
   website: IWebsite;
@@ -21,6 +22,8 @@ export default function WebsiteRenderer({ website }: WebsiteRendererProps) {
             return <Gallery key={index} component={component} />;
           case 'contact':
             return <Contact key={index} component={component} />;
+          case 'products':
+            return <Products key={index} component={component} />;
           default:
             return null;
         }
