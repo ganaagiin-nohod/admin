@@ -32,7 +32,7 @@ export const navItems: NavItem[] = [
     icon: 'dashboard',
     isActive: false,
     shortcut: ['d', 'd'],
-    items: [] // Empty array as there are no child items for Dashboard
+    items: []
   },
   {
     title: 'Website Builder',
@@ -40,15 +40,23 @@ export const navItems: NavItem[] = [
     icon: 'website',
     isActive: false,
     shortcut: ['w', 'b'],
-    items: [] // Empty array as there are no child items
+    items: []
   },
+  // {
+  //   title: 'Presentation Builder',
+  //   url: '/dashboard/presentation-builder',
+  //   icon: 'website',
+  //   isActive: false,
+  //   shortcut: ['w', 'b'],
+  //   items: []
+  // },
   {
     title: 'Reservation',
     url: '/dashboard/reservation',
     icon: 'reservation',
     isActive: false,
     shortcut: ['d', 'd'],
-    items: [] // Empty array as there are no child items for Dashboard
+    items: []
   },
   {
     title: 'Product',

@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { ModeToggle } from '@/components/layout/ThemeToggle/theme-toggle';
 import {
   Plus,
   Trash2,
@@ -42,6 +43,7 @@ export default function WebsiteBuilderPage() {
   const [saving, setSaving] = useState(false);
   const [aiGenerating, setAiGenerating] = useState(false);
   const [showAiDialog, setShowAiDialog] = useState(false);
+  const [activeTab, setActiveTab] = useState('settings');
 
   useEffect(() => {
     fetchWebsites();
@@ -279,30 +281,31 @@ export default function WebsiteBuilderPage() {
   };
 
   return (
-    <div className='min-h-screen bg-gray-50'>
-      <div className='sticky top-0 z-50 border-b bg-white shadow-sm'>
+    <div className='bg-background min-h-screen'>
+      <div className='bg-background/80 sticky top-0 z-50 border-b shadow-sm backdrop-blur-xl'>
         <div className='container mx-auto px-4 py-4 sm:px-6'>
           <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
             <div className='flex items-center gap-3'>
-              <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-gray-900 text-white'>
+              <div className='bg-primary text-primary-foreground flex h-10 w-10 items-center justify-center rounded-lg'>
                 <Globe className='h-5 w-5' />
               </div>
               <div>
-                <h1 className='text-xl font-semibold text-gray-900 sm:text-2xl'>
+                <h1 className='text-foreground text-xl font-semibold sm:text-2xl'>
                   Website Builder
                 </h1>
-                <p className='hidden text-sm text-gray-600 sm:block'>
+                <p className='text-muted-foreground hidden text-sm sm:block'>
                   Create and manage your websites
                 </p>
               </div>
             </div>
 
             <div className='flex items-center gap-3'>
+              <ModeToggle />
               <Button
                 onClick={createNewWebsite}
                 variant='outline'
                 size='sm'
-                className='bg-transparent text-sm'
+                className='text-sm'
               >
                 <Plus className='mr-2 h-4 w-4' />
                 New Website
@@ -311,7 +314,7 @@ export default function WebsiteBuilderPage() {
                 onClick={saveWebsite}
                 disabled={saving}
                 size='sm'
-                className='bg-gray-900 text-sm hover:bg-gray-800'
+                className='text-sm'
               >
                 <Save className='mr-2 h-4 w-4' />
                 {saving ? 'Saving...' : 'Save'}
@@ -327,20 +330,24 @@ export default function WebsiteBuilderPage() {
             <Card className='h-fit'>
               <CardHeader className='pb-4'>
                 <CardTitle className='flex items-center gap-2 text-lg'>
-                  <Globe className='h-5 w-5 text-gray-600' />
+                  <Globe className='text-muted-foreground h-5 w-5' />
                   Your Websites
                 </CardTitle>
-                <p className='text-sm text-gray-500'>Manage your projects</p>
+                <p className='text-muted-foreground text-sm'>
+                  Manage your projects
+                </p>
               </CardHeader>
               <CardContent>
                 <div className='max-h-[calc(100vh-300px)] space-y-3 overflow-y-auto'>
                   {websites.length === 0 ? (
                     <div className='py-8 text-center'>
-                      <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100'>
-                        <Globe className='h-8 w-8 text-gray-400' />
+                      <div className='bg-muted mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full'>
+                        <Globe className='text-muted-foreground h-8 w-8' />
                       </div>
-                      <p className='text-sm text-gray-500'>No websites yet</p>
-                      <p className='mt-1 text-xs text-gray-400'>
+                      <p className='text-muted-foreground text-sm'>
+                        No websites yet
+                      </p>
+                      <p className='text-muted-foreground/70 mt-1 text-xs'>
                         Create your first website to get started
                       </p>
                     </div>
@@ -348,15 +355,15 @@ export default function WebsiteBuilderPage() {
                     websites.map((website, index) => (
                       <div
                         key={website._id?.toString() || `website-${index}`}
-                        className='cursor-pointer rounded-lg border bg-white p-4 transition-all duration-200 hover:border-gray-300 hover:shadow-sm'
+                        className='bg-card hover:border-border cursor-pointer rounded-lg border p-4 transition-all duration-200 hover:shadow-sm'
                         onClick={() => loadWebsite(website)}
                       >
                         <div className='mb-3 flex items-start justify-between'>
                           <div className='min-w-0 flex-1'>
-                            <h3 className='truncate font-medium text-gray-900'>
+                            <h3 className='text-card-foreground truncate font-medium'>
                               {website.title}
                             </h3>
-                            <p className='mt-1 flex items-center gap-1 text-sm text-gray-500'>
+                            <p className='text-muted-foreground mt-1 flex items-center gap-1 text-sm'>
                               <Globe className='h-3 w-3' />/{website.slug}
                             </p>
                           </div>
@@ -369,7 +376,7 @@ export default function WebsiteBuilderPage() {
                           <Button
                             size='sm'
                             variant='outline'
-                            className='h-7 bg-transparent px-2 text-xs'
+                            className='h-7 px-2 text-xs'
                             onClick={(e) => {
                               e.stopPropagation();
                               window.open(`/site/${website.slug}`, '_blank');
@@ -380,7 +387,7 @@ export default function WebsiteBuilderPage() {
                           </Button>
                           <Button
                             size='sm'
-                            className='h-7 bg-gray-900 px-2 text-xs hover:bg-gray-800'
+                            className='h-7 px-2 text-xs'
                             onClick={(e) => {
                               e.stopPropagation();
                               deployWebsite(website._id?.toString() || '');
@@ -397,7 +404,7 @@ export default function WebsiteBuilderPage() {
                             <a
                               href={website.deploymentUrl}
                               target='_blank'
-                              className='inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline'
+                              className='text-primary hover:text-primary/80 inline-flex items-center gap-1 text-xs font-medium hover:underline'
                               onClick={(e) => e.stopPropagation()}
                               rel='noreferrer'
                             >
@@ -406,7 +413,7 @@ export default function WebsiteBuilderPage() {
                             </a>
                             <div className='mt-1 flex items-center gap-2'>
                               <div className='h-2 w-2 rounded-full bg-green-400'></div>
-                              <span className='text-xs text-gray-500'>
+                              <span className='text-muted-foreground text-xs'>
                                 {website.deploymentStatus || 'deployed'}
                               </span>
                             </div>
@@ -429,7 +436,7 @@ export default function WebsiteBuilderPage() {
                       {currentWebsite.title || 'Untitled Website'}
                     </CardTitle>
                     {currentWebsite.slug && (
-                      <p className='mt-1 text-sm text-gray-500'>
+                      <p className='text-muted-foreground mt-1 text-sm'>
                         Preview at: /site/{currentWebsite.slug}
                       </p>
                     )}
@@ -444,7 +451,11 @@ export default function WebsiteBuilderPage() {
               </CardHeader>
 
               <CardContent>
-                <Tabs defaultValue='settings' className='w-full'>
+                <Tabs
+                  value={activeTab}
+                  onValueChange={setActiveTab}
+                  className='w-full'
+                >
                   <TabsList className='grid w-full grid-cols-2'>
                     <TabsTrigger
                       value='settings'
@@ -499,7 +510,7 @@ export default function WebsiteBuilderPage() {
                           placeholder='my-awesome-website'
                         />
                         {currentWebsite.slug && (
-                          <p className='rounded bg-gray-50 px-3 py-2 text-xs text-gray-500'>
+                          <p className='bg-muted text-muted-foreground rounded px-3 py-2 text-xs'>
                             Your site will be available at:{' '}
                             <code>/site/{currentWebsite.slug}</code>
                           </p>
@@ -509,9 +520,9 @@ export default function WebsiteBuilderPage() {
                   </TabsContent>
 
                   <TabsContent value='components' className='mt-6 space-y-6'>
-                    <div className='flex flex-wrap gap-3 rounded-lg border bg-gradient-to-r from-purple-50 to-blue-50 p-4'>
+                    <div className='bg-muted/50 flex flex-wrap gap-3 rounded-lg border p-4'>
                       <div className='mb-2 flex w-full items-center justify-between'>
-                        <p className='text-sm font-medium text-gray-700'>
+                        <p className='text-foreground text-sm font-medium'>
                           Add Components
                         </p>
                         <Button
@@ -573,13 +584,13 @@ export default function WebsiteBuilderPage() {
                     <div className='max-h-[calc(100vh-400px)] space-y-4 overflow-y-auto'>
                       {currentWebsite.components?.length === 0 ? (
                         <div className='py-12 text-center'>
-                          <div className='mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gray-100'>
-                            <Layout className='h-10 w-10 text-gray-400' />
+                          <div className='bg-muted mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full'>
+                            <Layout className='text-muted-foreground h-10 w-10' />
                           </div>
-                          <h3 className='mb-2 text-lg font-medium text-gray-700'>
+                          <h3 className='text-foreground mb-2 text-lg font-medium'>
                             No components yet
                           </h3>
-                          <p className='mb-4 text-sm text-gray-500'>
+                          <p className='text-muted-foreground mb-4 text-sm'>
                             Add your first component to start building
                           </p>
                         </div>
@@ -646,14 +657,14 @@ function ComponentEditor({
     <Card className='border'>
       <CardHeader className='flex flex-row items-center justify-between pb-4'>
         <div className='flex items-center gap-3'>
-          <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-600'>
+          <div className='bg-muted text-muted-foreground flex h-8 w-8 items-center justify-center rounded-lg'>
             {getComponentIcon(component.type)}
           </div>
           <div>
             <CardTitle className='text-base capitalize'>
               {component.type} Section
             </CardTitle>
-            <p className='text-sm text-gray-500'>
+            <p className='text-muted-foreground text-sm'>
               Configure your {component.type} content
             </p>
           </div>
@@ -919,10 +930,10 @@ function ComponentEditor({
                 ))}
               </div>
             ) : (
-              <div className='rounded-lg border-2 border-dashed border-gray-200 py-8 text-center'>
-                <ImageIcon className='mx-auto mb-2 h-8 w-8 text-gray-400' />
-                <p className='text-sm text-gray-500'>No products yet</p>
-                <p className='text-xs text-gray-400'>
+              <div className='border-border rounded-lg border-2 border-dashed py-8 text-center'>
+                <ImageIcon className='text-muted-foreground mx-auto mb-2 h-8 w-8' />
+                <p className='text-muted-foreground text-sm'>No products yet</p>
+                <p className='text-muted-foreground/70 text-xs'>
                   Click "Add Product" to get started
                 </p>
               </div>

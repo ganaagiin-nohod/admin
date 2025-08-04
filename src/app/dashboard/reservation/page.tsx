@@ -1,12 +1,13 @@
+'use client';
+
+import { useState } from 'react';
 import { ReservationForm } from '@/components/forms/reservation-form';
 import { ReservationsTable } from '@/components/tables/reservations-table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-export const metadata = {
-  title: 'Dashboard : Reservations'
-};
-
 export default function ReservationPage() {
+  const [activeTab, setActiveTab] = useState('new');
+
   return (
     <div className='space-y-6'>
       <div>
@@ -16,7 +17,11 @@ export default function ReservationPage() {
         </p>
       </div>
 
-      <Tabs defaultValue='new' className='space-y-4'>
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className='space-y-4'
+      >
         <TabsList>
           <TabsTrigger value='new'>New Reservation</TabsTrigger>
           <TabsTrigger value='manage'>Manage Reservations</TabsTrigger>
