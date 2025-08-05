@@ -8,11 +8,5 @@
       "maxDuration": 30
     }
   },
-  "regions": ["iad1"],
-  "crons": [
-    {
-      "path": "/api/cron/sync-emails",
-      "schedule": "0 */2 * * *"
-    }
-  ]
+  "regions": ["iad1"]
 }

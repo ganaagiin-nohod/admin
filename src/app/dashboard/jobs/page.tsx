@@ -5,13 +5,15 @@ import { useUser } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Mail, RefreshCw, TrendingUp, AlertCircle } from 'lucide-react';
+import { Plus, Mail, RefreshCw, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
-import JobApplicationForm from '@/components/jobs/JobApplicationForm';
-import JobApplicationList from '@/components/jobs/JobApplicationList';
-import GmailConnection from '@/components/jobs/GmailConnection';
-import JobInsights from '@/components/jobs/JobInsights';
 import { JobApplication, JobStats } from '@/types/job';
+import { useAutoSync } from '@/hooks/useAutoSync';
+import GmailConnection from '@/components/jobs/GmailConnection';
+import AutoSyncSettings from '@/components/jobs/AutoSyncSettings';
+import JobInsights from '@/components/jobs/JobInsights';
+import JobApplicationList from '@/components/jobs/JobApplicationList';
+import JobApplicationForm from '@/components/jobs/JobApplicationForm';
 
 export default function JobsPage() {
   const { user } = useUser();
@@ -63,6 +65,13 @@ export default function JobsPage() {
       setLoading(false);
     }
   };
+
+  // Auto-sync emails every 30 minutes when Gmail is connected
+  useAutoSync({
+    enabled: gmailConnected && !gmailStatusLoading,
+    intervalMinutes: 30,
+    onSync: fetchJobs
+  });
 
   const checkGmailStatus = async () => {
     try {
@@ -270,6 +279,8 @@ export default function JobsPage() {
         loading={gmailStatusLoading}
         onConnectionChange={setGmailConnected}
       />
+
+      <AutoSyncSettings gmailConnected={gmailConnected} />
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
