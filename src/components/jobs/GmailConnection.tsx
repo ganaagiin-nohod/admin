@@ -61,7 +61,6 @@ export default function GmailConnection({
       const response = await fetch('/api/gmail/status', {
         method: 'DELETE'
       });
-
       if (response.ok) {
         onConnectionChange(false);
         toast.success('Gmail disconnected successfully');
