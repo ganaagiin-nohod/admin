@@ -8,7 +8,9 @@
   },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "NODE_OPTIONS='--max-old-space-size=8192 --max-semi-space-size=1024' next build",
+    "build:memory": "NODE_OPTIONS='--max-old-space-size=16384' next build",
+    "build:low-memory": "NODE_OPTIONS='--max-old-space-size=2048' next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "eslint src --fix && pnpm format",
@@ -81,6 +83,7 @@
     "date-fns": "^4.1.0",
     "eslint": "8.48.0",
     "eslint-config-next": "15.1.0",
+    "googleapis": "^155.0.0",
     "graphql": "^16.8.1",
     "html2canvas": "^1.4.1",
     "input-otp": "^1.4.2",

@@ -24,13 +24,50 @@ const baseConfig: NextConfig = {
       }
     ]
   },
-  transpilePackages: ['geist']
+  transpilePackages: ['geist'],
+  experimental: {
+    workerThreads: false,
+    webpackBuildWorker: false
+  },
+
+  webpack: (config, { dev, isServer }) => {
+    if (!dev) {
+      config.cache = false;
+      config.parallelism = 1;
+    }
+
+    if (!dev && !isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          minSize: 20000,
+          maxSize: 200000,
+          cacheGroups: {
+            default: {
+              minChunks: 1,
+              priority: -20,
+              reuseExistingChunk: true
+            },
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              priority: -10,
+              chunks: 'all',
+              maxSize: 200000
+            }
+          }
+        }
+      };
+    }
+    return config;
+  }
 };
 
 let configWithPlugins = baseConfig;
 
-// Conditionally enable Sentry configuration
-if (!process.env.NEXT_PUBLIC_SENTRY_DISABLED) {
+// Temporarily disable Sentry to reduce memory usage during build
+if (false && !process.env.NEXT_PUBLIC_SENTRY_DISABLED) {
   configWithPlugins = withSentryConfig(configWithPlugins, {
     // For all available options, see:
     // https://www.npmjs.com/package/@sentry/webpack-plugin#options

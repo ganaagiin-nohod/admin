@@ -20,14 +20,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('🤖 Generating AI content:', {
-      type,
-      description,
-      businessType,
-      tone,
-      fullWebsite
-    });
-
     let result;
 
     if (fullWebsite) {
