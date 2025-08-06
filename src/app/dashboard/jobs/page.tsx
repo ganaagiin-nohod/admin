@@ -185,7 +185,7 @@ export default function JobsPage() {
   }
 
   return (
-    <div className='space-y-6'>
+    <div className='h-[calc(100vh-100px)] space-y-6 overflow-y-scroll p-6'>
       <div className='flex items-center justify-between'>
         <div>
           <h1 className='text-3xl font-bold'>Job Applications</h1>
