@@ -225,7 +225,6 @@ export default function WebsiteBuilderPage() {
       if (data.success) {
         const { hero, about, products, contact } = data.content;
 
-        // Create components from AI-generated content
         const aiComponents: IWebsiteComponent[] = [];
 
         if (hero) {

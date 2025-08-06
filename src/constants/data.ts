@@ -94,6 +94,14 @@ export const navItems: NavItem[] = [
     shortcut: ['k', 'k'],
     isActive: false,
     items: [] // No child items
+  },
+  {
+    title: 'GanaLog',
+    url: '/dashboard/ganalog',
+    icon: 'ganalog',
+    shortcut: ['g', 'l'],
+    isActive: false,
+    items: [] // No child items
   }
 ];
 
