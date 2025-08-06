@@ -16,7 +16,6 @@ export type Product = {
     name: string;
     email: string;
   };
-  // Legacy fields for backward compatibility
   photo_url?: string;
   name?: string;
   created_at?: string;
@@ -24,7 +23,6 @@ export type Product = {
   updated_at?: string;
 };
 
-//Info: The following data is used for the sidebar navigation and Cmd K bar.
 export const navItems: NavItem[] = [
   {
     title: 'Dashboard',
@@ -40,6 +38,22 @@ export const navItems: NavItem[] = [
     icon: 'website',
     isActive: false,
     shortcut: ['w', 'b'],
+    items: []
+  },
+  {
+    title: 'Jobs',
+    url: '/dashboard/jobs',
+    icon: 'jobs',
+    isActive: false,
+    shortcut: ['w', 'b'],
+    items: []
+  },
+  {
+    title: 'DevSync',
+    url: '/dashboard/devsync',
+    icon: 'code',
+    isActive: false,
+    shortcut: ['d', 's'],
     items: []
   },
   // {
@@ -64,11 +78,11 @@ export const navItems: NavItem[] = [
     icon: 'product',
     shortcut: ['p', 'p'],
     isActive: false,
-    items: [] // No child items
+    items: []
   },
   {
     title: 'Account',
-    url: '#', // Placeholder as there is no direct link for the parent
+    url: '#',
     icon: 'billing',
     isActive: true,
 
@@ -93,7 +107,7 @@ export const navItems: NavItem[] = [
     icon: 'kanban',
     shortcut: ['k', 'k'],
     isActive: false,
-    items: [] // No child items
+    items: []
   }
 ];
 

@@ -253,6 +253,18 @@ Return only the content, no additional formatting or explanations.
   }
 }
 
+export async function generateAIAssistance(prompt: string): Promise<string> {
+  try {
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    return response.text();
+  } catch (error) {
+    console.error('Error generating AI assistance:', error);
+    return 'Unable to provide assistance at this time. Please try again later.';
+  }
+}
+
 export async function generateFullWebsite(
   description: string,
   businessType?: string,
@@ -294,7 +306,7 @@ Return only valid JSON, no additional text.
 `;
 
     const result = await model.generateContent(prompt);
-    const response = await result.response;
+    const response = result.response;
     const text = response.text();
 
     let cleanedText = text.trim();
