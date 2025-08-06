@@ -1,9 +1,16 @@
 import type { NextConfig } from 'next';
 import { withSentryConfig } from '@sentry/nextjs';
+import { AUTH_CONFIG } from './src/constants/auth';
 
 const baseConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true
+  },
+  env: {
+    NEXT_PUBLIC_CLERK_SIGN_IN_URL: AUTH_CONFIG.signInUrl,
+    NEXT_PUBLIC_CLERK_SIGN_UP_URL: AUTH_CONFIG.signUpUrl,
+    NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: AUTH_CONFIG.afterSignInUrl,
+    NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: AUTH_CONFIG.afterSignUpUrl
   },
   images: {
     remotePatterns: [
