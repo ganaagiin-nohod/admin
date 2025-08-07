@@ -7,4 +7,5 @@ export const AUTH_CONFIG = {
   SPOTIFY_CLIENT_SECRET: 'f834b1f0520248e1a8d17910f907ef71',
   SPOTIFY_REDIRECT_URI: 'https://saasbygana.vercel.app/api/spotify/callback',
   NEXTAUTH_URL: 'https://saasbygana.vercel.app'
+  CLOUDINARY_CLOUD_NAME: 'dmitewgkw'
 } as const;
