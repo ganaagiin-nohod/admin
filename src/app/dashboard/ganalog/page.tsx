@@ -5,11 +5,12 @@ import { useUser } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Calendar, Users, TrendingUp } from 'lucide-react';
+import { Plus, Calendar, Users, TrendingUp, Music } from 'lucide-react';
 import { DailyLogCard } from '@/components/ganalog/DailyLogCard';
 import { IDailyLog } from '@/models/DailyLog';
 import { PublicFeed } from '@/components/ganalog/PublicFeed';
 import { CreateLogDialog } from '@/components/ganalog/CreateLogDialog';
+import { MusicDashboard } from '@/components/ganabeats/MusicDashboard';
 
 export default function GanaLogPage() {
   const { user } = useUser();
@@ -134,6 +135,10 @@ export default function GanaLogPage() {
         <TabsList>
           <TabsTrigger value='my-logs'>My Logs</TabsTrigger>
           <TabsTrigger value='public-feed'>Public Feed</TabsTrigger>
+          <TabsTrigger value='music' className='gap-2'>
+            <Music className='h-4 w-4' />
+            Music
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value='my-logs' className='space-y-4'>
@@ -168,6 +173,10 @@ export default function GanaLogPage() {
 
         <TabsContent value='public-feed'>
           <PublicFeed currentUserId={user?.id} />
+        </TabsContent>
+
+        <TabsContent value='music'>
+          <MusicDashboard />
         </TabsContent>
       </Tabs>
 

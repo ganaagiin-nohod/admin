@@ -22,6 +22,7 @@ import {
 import { IDailyLog } from '@/models/DailyLog';
 import { LogEntryItem } from './LogEntryItem';
 import { AddEntryDialog } from './AddEntryDialog';
+import { PlaylistEmbed } from '@/components/ganabeats/PlaylistEmbed';
 
 interface DailyLogCardProps {
   log: IDailyLog;
@@ -192,6 +193,15 @@ export function DailyLogCard({
             </div>
           ))}
         </div>
+
+        {log.playlist && (
+          <div className='space-y-2'>
+            <h3 className='text-muted-foreground text-sm font-semibold tracking-wide uppercase'>
+              Today's Vibe
+            </h3>
+            <PlaylistEmbed playlist={log.playlist} compact={false} />
+          </div>
+        )}
 
         {log.entries.length > 0 && (
           <div className='space-y-3'>

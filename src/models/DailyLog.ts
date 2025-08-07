@@ -15,6 +15,18 @@ export interface ILogEntry {
   timestamp: Date;
 }
 
+export interface ISpotifyPlaylist {
+  id: string;
+  name: string;
+  description?: string;
+  imageUrl?: string;
+  trackCount: number;
+  isPublic: boolean;
+  collaborative: boolean;
+  externalUrl: string;
+  embedUrl: string;
+}
+
 export interface IDailyLog extends Document {
   userId: string;
   date: Date;
@@ -22,6 +34,7 @@ export interface IDailyLog extends Document {
   entries: ILogEntry[];
   summary?: string;
   isPublic: boolean;
+  playlist?: ISpotifyPlaylist;
   reactions: {
     userId: string;
     type: 'fire' | 'love' | 'clap' | 'mind_blown';
@@ -71,6 +84,18 @@ const CommentSchema = new Schema({
   timestamp: { type: Date, default: Date.now }
 });
 
+const SpotifyPlaylistSchema = new Schema({
+  id: { type: String, required: true },
+  name: { type: String, required: true },
+  description: { type: String },
+  imageUrl: { type: String },
+  trackCount: { type: Number, required: true },
+  isPublic: { type: Boolean, required: true },
+  collaborative: { type: Boolean, required: true },
+  externalUrl: { type: String, required: true },
+  embedUrl: { type: String, required: true }
+});
+
 const DailyLogSchema = new Schema(
   {
     userId: { type: String, required: true },
@@ -79,6 +104,7 @@ const DailyLogSchema = new Schema(
     entries: [LogEntrySchema],
     summary: { type: String },
     isPublic: { type: Boolean, default: true },
+    playlist: SpotifyPlaylistSchema,
     reactions: [ReactionSchema],
     comments: [CommentSchema]
   },
