@@ -15,7 +15,8 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Sparkles, X, Plus } from 'lucide-react';
-import { IDailyLog } from '@/models/DailyLog';
+import { IDailyLog, ISpotifyPlaylist } from '@/models/DailyLog';
+import { PlaylistPicker } from '@/components/ganabeats/PlaylistPicker';
 
 interface CreateLogDialogProps {
   open: boolean;
@@ -33,6 +34,8 @@ export function CreateLogDialog({
   const [isCreating, setIsCreating] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+  const [selectedPlaylist, setSelectedPlaylist] =
+    useState<ISpotifyPlaylist | null>(null);
 
   useEffect(() => {
     if (open) {
@@ -94,7 +97,8 @@ export function CreateLogDialog({
         body: JSON.stringify({
           date: new Date().toISOString(),
           challenges: validChallenges,
-          isPublic
+          isPublic,
+          playlist: selectedPlaylist
         })
       });
 
@@ -103,6 +107,7 @@ export function CreateLogDialog({
         onLogCreated(data.log);
         setChallenges(['', '', '']);
         setIsPublic(true);
+        setSelectedPlaylist(null);
       }
     } catch (error) {
       console.error('Error creating log:', error);
@@ -115,7 +120,7 @@ export function CreateLogDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='sm:max-w-[600px]'>
+      <DialogContent className='sm:max-w-[800px]'>
         <DialogHeader>
           <DialogTitle>Start Today's Log</DialogTitle>
           <DialogDescription>
@@ -186,6 +191,11 @@ export function CreateLogDialog({
               </div>
             )}
           </div>
+
+          <PlaylistPicker
+            selectedPlaylist={selectedPlaylist}
+            onPlaylistSelect={setSelectedPlaylist}
+          />
 
           <div className='flex items-center justify-between'>
             <div className='space-y-0.5'>

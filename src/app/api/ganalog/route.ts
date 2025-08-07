@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { date, challenges, isPublic = true } = body;
+    const { date, challenges, isPublic = true, playlist } = body;
 
     await connectToDatabase();
 
@@ -75,7 +75,8 @@ export async function POST(request: NextRequest) {
         completed: false
       })),
       entries: [],
-      isPublic
+      isPublic,
+      playlist: playlist || undefined
     });
 
     await dailyLog.save();
